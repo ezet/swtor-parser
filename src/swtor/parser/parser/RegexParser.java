@@ -1,5 +1,13 @@
 package swtor.parser.parser;
 
-public class RegexParser implements ParserInterface {
+import swtor.parser.model.LogEntry;
+
+public class RegexParser implements Parser {
+
+	@Override
+	public void parse(LogEntry entry, String line) {
+		// TODO implement
+		
+	}
 
 }
