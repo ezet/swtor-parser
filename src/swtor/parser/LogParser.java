@@ -1,12 +1,13 @@
 package swtor.parser;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,38 +17,50 @@ import swtor.parser.parser.ParserFactory;
 
 public class LogParser implements LogParserInterface {
 
-	private InputStreamReader isr;
-	private BufferedReader bReader;
-	private Parser parser;
-	private List<LogEntry> log;
+	private Parser parser = ParserFactory.getInstance();;
+	private List<LogEntry> log = new ArrayList<>();
+	private Path path;
 
-	public LogParser(InputStream is) {
-		isr = new InputStreamReader(is);
-		bReader = new BufferedReader(isr);
-		parser = ParserFactory.getInstance();
+	public LogParser(String path) {
+		this.path = Paths.get(path);
 	}
 
-	public LogParser(String filePath) {
+	public LogParser(URI uri) {
+		this.path = Paths.get(uri);
+	}
 
+	public LogParser(Path path) {
+		this.path = path;
 	}
 
 	public void parse() throws IOException {
-//		int lines = count();
-		log = new ArrayList<LogEntry>();
-		// TODO implement static sizing by lines or size
+		int size = estimateSize();
+		log = new ArrayList<>(size);
 		String line;
-		int currentLine = -1;
-		while ((line = bReader.readLine()) != null) {
-			LogEntry entry = new LogEntry(++currentLine);
-			parser.parse(entry, line);
-			log.add(entry);
+		try (BufferedReader reader = Files.newBufferedReader(path, Charset.defaultCharset())) {
+			// TODO implement static sizing by lines or size
+			int currentLine = -1;
+			while ((line = reader.readLine()) != null) {
+				LogEntry entry = new LogEntry(++currentLine);
+				parser.parse(entry, line);
+				log.add(entry);
+			}
 		}
-		bReader.close();
 	}
 
-	private int countChar(String filename) throws IOException {
-		InputStream is = new BufferedInputStream(new FileInputStream(filename));
+	private int estimateSize() {
+		int lines = 100;
 		try {
+			return count();
+		} catch (IOException e) {
+			// fail silently
+		}
+		return lines;
+	}
+
+	@SuppressWarnings("unused")
+	private int countChar(String filename) throws IOException {
+		try (InputStream is = Files.newInputStream(path)) {
 			byte[] c = new byte[1024];
 			int count = 0;
 			int readChars = 0;
@@ -58,17 +71,16 @@ public class LogParser implements LogParserInterface {
 				}
 			}
 			return count;
-		} finally {
-			is.close();
 		}
 	}
 
 	private int count() throws IOException {
-		BufferedReader reader = new BufferedReader(isr);
-		int lines = -1;
-		while (reader.readLine() != null)
-			++lines;
-		return lines;
+		try (BufferedReader reader = Files.newBufferedReader(path, Charset.defaultCharset())) {
+			int lines = -1;
+			while (reader.readLine() != null)
+				++lines;
+			return lines;
+		}
 	}
 
 }
