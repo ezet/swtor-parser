@@ -15,21 +15,19 @@ public class SimpleParser implements Parser {
 	private LogEntry entry;
 	private static Pattern objectSeparator;
 	private static Pattern propertySeparator;
-	private static Pattern blankSeparator;
+	private static Pattern resultSplit;
+	private static Pattern idSplit;
 
 	static {
-		objectSeparator = Pattern.compile("[(\\] )(\\) )]");
-		objectSeparator = Pattern.compile("\\] |\\) ");
 
-		objectSeparator = Pattern.compile("[\\]\\)>] ?");
-		propertySeparator = Pattern.compile("[{:]");
-		blankSeparator = Pattern.compile(" ");
-	}
+		objectSeparator = Pattern.compile("[\\]<] ?");
 
-	private void print(String[] parts) {
-		for (String s : parts) {
-			System.out.println(s);
-		}
+		propertySeparator = Pattern.compile(" ?[{}][ :]*");
+
+		idSplit = Pattern.compile(" \\{");
+
+		resultSplit = Pattern.compile(" ");
+
 	}
 
 	public SimpleParser() {
@@ -39,7 +37,6 @@ public class SimpleParser implements Parser {
 	public void parse(LogEntry entry, String line) {
 		this.entry = entry;
 		String[] parts = objectSeparator.split(line.replace("[", ""));
-		print(parts);
 		parseTimestamp(parts[0]);
 		parseActor(entry.getSource(), parts[1]);
 		parseActor(entry.getTarget(), parts[2]);
@@ -56,11 +53,10 @@ public class SimpleParser implements Parser {
 
 	private void parseActor(Actor actor, String string) {
 		if (!string.isEmpty()) {
-			string = string.replace("}", "");
-			String[] parts = propertySeparator.split(string);
+			String[] parts = idSplit.split(string);
 			actor.setName(parts[0].trim());
 			if (parts.length > 1) {
-				actor.setGameId(Long.valueOf(parts[1]));
+				actor.setGameId(Long.valueOf(parts[1].substring(0, parts[1].length() - 1)));
 				actor.setNpc(true);
 			}
 		}
@@ -68,37 +64,35 @@ public class SimpleParser implements Parser {
 
 	private void parseAbility(String part) {
 		if (!part.isEmpty()) {
-			part = part.replace("}", "");
-			String[] parts = propertySeparator.split(part);
+			String[] parts = idSplit.split(part);
 			entry.getAbility().setName(parts[0].trim());
-			entry.getAbility().setGameId(Long.valueOf(parts[1]));
+			entry.getAbility().setGameId(Long.valueOf(parts[1].substring(0, parts[1].length() - 1)));
 		}
 	}
 
 	private void parseEvent(String part) {
 		if (!part.isEmpty()) {
 			CombatEvent event = entry.getEvent();
-			part = part.replace("}", "");
 			String parts[] = propertySeparator.split(part);
-			event.setType(EventType.valueOfString(parts[0].trim()));
+			event.setType(EventType.valueOfString(parts[0]));
 			event.setTypeId(Long.valueOf(parts[1]));
-			event.setName(parts[2].trim());
+			event.setName(parts[2]);
 			event.setGameId(Long.valueOf(parts[3]));
 		}
 	}
 
 	private void parseResult(String part) {
-		if (part.length() > 1) {
-			String[] parts = blankSeparator.split(part);
-			print(parts);
+		if (part.length() > 3) {
+			String[] parts = resultSplit.split(part);
 			Result res = entry.getResult();
 			long id = 0;
-			if (parts[0].charAt(parts[0].length() - 1) == '*') {
+			String value = parts[0].replaceAll("\\)", "");
+			if (parts[0].charAt(value.length() - 1) == '*') {
 				res.setCritical(true);
-				res.setValue(Integer.valueOf(parts[0].substring(1, parts[0].length() - 1)));
+				res.setValue(Integer.valueOf(value.substring(1, value.length() - 1)));
 			} else {
-				res.setValue(Integer.valueOf(parts[0].substring(1)));
-				
+				res.setValue(Integer.valueOf(value.substring(1, value.length())));
+
 			}
 			if (parts.length > 2) {
 				id = Long.valueOf(parts[2].substring(1, parts[2].length() - 2));
@@ -110,7 +104,7 @@ public class SimpleParser implements Parser {
 					res.setEffectId(id);
 				}
 			}
-			if (parts.length > 4) {
+			if (parts.length > 3) {
 				if (parts[3].charAt(0) == '-') {
 					id = Long.valueOf(parts[2].substring(1, parts[2].length() - 2));
 					res.setMitigationType(MitigationType.valueOf(parts[3].substring(1).toUpperCase()));
@@ -118,14 +112,14 @@ public class SimpleParser implements Parser {
 				} else {
 					res.setAbsorb(true);
 					res.setAbsorbValue(Integer.valueOf(parts[3].substring(1)));
-					id = Long.valueOf(parts[5].substring(1, parts[5].length() - 2));
+					id = Long.valueOf(parts[5].substring(1, parts[5].indexOf('}')));
 					res.setAbsorbId(id);
 				}
 			}
 			if (parts.length > 6) {
 				res.setAbsorb(true);
 				res.setAbsorbValue(Integer.valueOf(parts[5].substring(1)));
-				id = Long.valueOf(parts[7].substring(1, parts[7].length() - 2));
+				id = Long.valueOf(parts[7].substring(1, parts[7].indexOf('}')));
 				res.setAbsorbId(id);
 			}
 
@@ -134,10 +128,9 @@ public class SimpleParser implements Parser {
 	}
 
 	private void parseThreatDelta(String part) {
-		int dThreat = 0;
-		if (part.length() > 2) {
-			dThreat = Integer.valueOf(part.substring(1));
+		if (!part.isEmpty()) {
+			int dThreat = Integer.valueOf(part.substring(0, part.length() - 1));
+			entry.getResult().setThreatDelta(dThreat);
 		}
-		entry.getResult().setThreatDelta(dThreat);
 	}
 }

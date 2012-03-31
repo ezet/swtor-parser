@@ -1,5 +1,9 @@
 package swtor.parser.filter;
 
-public class InputFilter implements Filter {
+import swtor.parser.model.LogEntry;
+
+public interface InputFilter extends Filter {
+	
+	public boolean process(LogEntry entry);
 
 }

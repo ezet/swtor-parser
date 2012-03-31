@@ -22,8 +22,8 @@ public class LogParser implements LogParserInterface {
 	private Parser parser = ParserFactory.getInstance();;
 	private List<LogEntry> log = new ArrayList<>();
 	private Path path;
-	private List<InputFilter> inputfilters;
-	
+	private List<InputFilter> inputfilters = new ArrayList<>();
+
 	public LogParser(String path) {
 		this.path = Paths.get(path);
 	}
@@ -36,37 +36,71 @@ public class LogParser implements LogParserInterface {
 		this.path = path;
 	}
 
+	public void addInputFilter(InputFilter filter) {
+		inputfilters.add(filter);
+	}
+
+	public void removeInputFilter(InputFilter filter) {
+		inputfilters.remove(filter);
+	}
+
+	public void clearInputFilters() {
+		inputfilters.clear();
+	}
+
 	public void parse() throws IOException {
 		int size = estimateSize();
 		System.out.println(size);
+		System.out.println(count());
 		log = new ArrayList<>(size);
 		String line;
+		long start = System.currentTimeMillis();
 		try (BufferedReader reader = Files.newBufferedReader(path, Charset.defaultCharset())) {
 			// TODO implement static sizing by size
+
 			int currentLine = -1;
 			while ((line = reader.readLine()) != null) {
+				Logger.debug(line);
 				LogEntry entry = new LogEntry(++currentLine);
 				parser.parse(entry, line);
-				// TODO process input filters
-				log.add(entry);
-				// TODO process output filters
-				Logger.log(entry);
+				if (processInputFilters(entry)) {
+					processOutputFilters(entry);
+					log.add(entry);
+				}
+				Logger.debug(entry);
 			}
 		}
+		long end = System.currentTimeMillis();
+		System.out.println("Execution time: " + (end - start) + " ms.");
+	}
+
+	private void processOutputFilters(LogEntry entry) {
+
+	}
+
+	private boolean processInputFilters(LogEntry entry) {
+		boolean result = true;
+		for (InputFilter i : inputfilters) {
+			result = i.process(entry);
+			if (!result) {
+				break;
+			}
+		}
+		return result;
 	}
 
 	private int estimateSize() {
-		int lines = 100;
+		int lines = 10000;
 		try {
-			return count();
+			long size = Files.size(path);
+			return (int) (size / 170L);
 		} catch (IOException e) {
 			// fail silently
 		}
 		return lines;
 	}
 
-	@SuppressWarnings("unused")
-	private int countChar(String filename) throws IOException {
+	private int countChar() throws IOException {
 		try (InputStream is = Files.newInputStream(path)) {
 			byte[] c = new byte[1024];
 			int count = 0;

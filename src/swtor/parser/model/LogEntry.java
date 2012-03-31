@@ -82,11 +82,7 @@ public class LogEntry {
 	}
 	
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		
-		String string = String.format("%s, %s, %s, %s, %s, %s, %s", lineNumber, time, source, target, ability, event, result); 
-		
-		return string;
+		return String.format("%s, %s, %s, %s, %s, %s, %s", lineNumber, time, source, target, ability, event, result); 
 	}
 
 }

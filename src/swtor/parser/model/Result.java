@@ -2,11 +2,11 @@ package swtor.parser.model;
 
 public class Result {
 	public enum MitigationType {
-		GLANCE, MISS, DEFLECT, PARRY, NONE
+		MISS, GLANCE, DODGE, DEFLECT, PARRY, IMMUNE, NONE
 	}
 
 	public enum EffectType {
-		INTERNAL, ENERGY, KINETIC, NONE
+		INTERNAL, ENERGY, KINETIC, ELEMENTAL, NONE
 	}
 
 	public enum ResultType {
@@ -119,8 +119,6 @@ public class Result {
 	}
 	
 	public String toString() {
-		StringBuilder builder = new StringBuilder(200);
-		String string = String.format("%s, %s, %s, %s, %s, %s, %s", effectType, value, critical, effectType, mitigationType, absorbValue, threatDelta);
-		return string;
+		return String.format("%s, %s, %s, %s, %s, %s, %s", effectType, value, critical, effectType, mitigationType, absorbValue, threatDelta);
 	}
 }

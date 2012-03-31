@@ -56,5 +56,9 @@ public class CombatEvent {
 	public void setGameId(long gameId) {
 		this.gameId = gameId;
 	}
+	
+	public String toString() {
+		return String.format("%s, %s", type, name);
+	}
 
 }
