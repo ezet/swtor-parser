@@ -29,5 +29,9 @@ public class Actor {
 	public void setNpc(boolean npc) {
 		this.npc = npc;
 	}
+	
+	public String toString() {
+		return name;
+	}
 
 }

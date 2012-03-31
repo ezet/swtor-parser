@@ -11,16 +11,19 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import swtor.parser.filter.InputFilter;
 import swtor.parser.model.LogEntry;
 import swtor.parser.parser.Parser;
 import swtor.parser.parser.ParserFactory;
+import swtor.parser.utility.Logger;
 
 public class LogParser implements LogParserInterface {
 
 	private Parser parser = ParserFactory.getInstance();;
 	private List<LogEntry> log = new ArrayList<>();
 	private Path path;
-
+	private List<InputFilter> inputfilters;
+	
 	public LogParser(String path) {
 		this.path = Paths.get(path);
 	}
@@ -35,15 +38,19 @@ public class LogParser implements LogParserInterface {
 
 	public void parse() throws IOException {
 		int size = estimateSize();
+		System.out.println(size);
 		log = new ArrayList<>(size);
 		String line;
 		try (BufferedReader reader = Files.newBufferedReader(path, Charset.defaultCharset())) {
-			// TODO implement static sizing by lines or size
+			// TODO implement static sizing by size
 			int currentLine = -1;
 			while ((line = reader.readLine()) != null) {
 				LogEntry entry = new LogEntry(++currentLine);
 				parser.parse(entry, line);
+				// TODO process input filters
 				log.add(entry);
+				// TODO process output filters
+				Logger.log(entry);
 			}
 		}
 	}

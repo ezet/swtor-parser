@@ -13,15 +13,15 @@ public class Result {
 		HEAL, DAMAGE, OTHER
 	}
 
-	private ResultType resultType;
+	private ResultType resultType = ResultType.OTHER;
 
 	private int value;
 	private boolean critical;
 
-	private EffectType effectType;
-	private long typeId;
+	private EffectType effectType = EffectType.NONE;
+	private long effectId;
 
-	private MitigationType mitigationType;
+	private MitigationType mitigationType = MitigationType.NONE;
 	private long mitigateId;
 
 	private boolean absorb;
@@ -62,12 +62,12 @@ public class Result {
 		this.effectType = effectType;
 	}
 
-	public long getTypeId() {
-		return typeId;
+	public long getEffectId() {
+		return effectId;
 	}
 
-	public void setTypeId(long typeId) {
-		this.typeId = typeId;
+	public void setEffectId(long effectId) {
+		this.effectId = effectId;
 	}
 
 	public MitigationType getMitigationType() {
@@ -116,5 +116,11 @@ public class Result {
 
 	public void setThreatDelta(int threatDelta) {
 		this.threatDelta = threatDelta;
+	}
+	
+	public String toString() {
+		StringBuilder builder = new StringBuilder(200);
+		String string = String.format("%s, %s, %s, %s, %s, %s, %s", effectType, value, critical, effectType, mitigationType, absorbValue, threatDelta);
+		return string;
 	}
 }

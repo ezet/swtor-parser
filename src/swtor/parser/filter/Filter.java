@@ -1,5 +1,5 @@
 package swtor.parser.filter;
 
-public interface FilterInterface {
+public interface Filter {
 
 }

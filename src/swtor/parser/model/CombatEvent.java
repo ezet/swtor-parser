@@ -1,9 +1,23 @@
 package swtor.parser.model;
 
-public class Event {
+public class CombatEvent {
 
 	public enum EventType {
-		REMOVE_EFFECT, APPLY_EFFECT, SPEND, RESTORE, OTHER
+		REMOVE_EFFECT, APPLY_EFFECT, SPEND, RESTORE, OTHER;
+		
+		public static EventType valueOfString(String string) {
+			EventType type = OTHER;
+			if (string.equals("RemoveEffect")) {
+				type = REMOVE_EFFECT;
+			} else if (string.equals("ApplyEffect")) {
+				type = APPLY_EFFECT;
+			} else if (string.equals("Spend")) {
+				type = SPEND;
+			} else if (string.equals("RESTORE")) {
+				type = RESTORE;
+			}
+			return type;
+		}
 	}
 
 	private EventType type;

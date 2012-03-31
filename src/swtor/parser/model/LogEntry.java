@@ -9,13 +9,13 @@ public class LogEntry {
 	}
 
 	private final long lineNumber;
-	private LogEntryType type;
+	private LogEntryType type = LogEntryType.OTHER;
 	private Calendar time;
-	private Actor source;
-	private Actor target;
-	private Ability ability;
-	private Event event;
-	private Result result;
+	private Actor source = new Actor();
+	private Actor target = new Actor();
+	private Ability ability = new Ability();
+	private CombatEvent event = new CombatEvent();
+	private Result result = new Result();
 	
 	public LogEntry(long lineNumber) {
 		this.lineNumber = lineNumber;
@@ -65,11 +65,11 @@ public class LogEntry {
 		this.ability = ability;
 	}
 
-	public Event getEvent() {
+	public CombatEvent getEvent() {
 		return event;
 	}
 
-	public void setEvent(Event event) {
+	public void setEvent(CombatEvent event) {
 		this.event = event;
 	}
 
@@ -79,6 +79,14 @@ public class LogEntry {
 
 	public void setResult(Result result) {
 		this.result = result;
+	}
+	
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		
+		String string = String.format("%s, %s, %s, %s, %s, %s, %s", lineNumber, time, source, target, ability, event, result); 
+		
+		return string;
 	}
 
 }
