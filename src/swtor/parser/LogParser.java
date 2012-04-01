@@ -34,6 +34,10 @@ public class LogParser implements Parser {
 	public LogParser(Path path) {
 		this.path = path;
 	}
+	
+	public List<LogEntry> getLog() {
+		return log;
+	}
 
 	public void addInputFilter(InputFilter filter) {
 		inputfilters.add(filter);
@@ -51,6 +55,7 @@ public class LogParser implements Parser {
 		int size = estimateLines();
 		String line;
 		long start = System.currentTimeMillis();
+		System.out.println(path.toString());
 		try (BufferedReader reader = Files.newBufferedReader(path, Charset.defaultCharset())) {
 			log = new ArrayList<>(size);
 			int currentLine = -1;

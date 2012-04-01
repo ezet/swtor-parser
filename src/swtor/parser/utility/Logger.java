@@ -7,8 +7,11 @@ public class Logger {
 	private static boolean debug = false;
 
 	public static void log(LogEntry entry) {
-		System.out.println(entry.toString());
+		log(entry.toString());
+	}
 
+	public static void log(String s) {
+		System.out.println(s);
 	}
 
 	public static void debug(LogEntry entry) {
@@ -22,7 +25,7 @@ public class Logger {
 				System.out.println(s);
 		}
 	}
-	
+
 	public static void debug(String s) {
 		if (debug)
 			System.out.println(s);

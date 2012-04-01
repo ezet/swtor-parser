@@ -1,36 +1,35 @@
 package swtor.parser.model;
 
+import java.text.DateFormat;
 import java.util.Calendar;
+
+import swtor.parser.constant.EntryType;
 
 public class LogEntry {
 
-	public enum LogEntryType {
-		DAMAGE, HEALING, DAMAGE_RECEIVED, HEALING_RECEIVED, OTHER
-	}
-
+	private EntryType type;
 	private final long lineNumber;
-	private LogEntryType type = LogEntryType.OTHER;
-	private Calendar time;
+	private Calendar time = Calendar.getInstance();
 	private Actor source = new Actor();
 	private Actor target = new Actor();
 	private Ability ability = new Ability();
 	private CombatEvent event = new CombatEvent();
 	private Result result = new Result();
-	
+
 	public LogEntry(long lineNumber) {
 		this.lineNumber = lineNumber;
 	}
 
-	public long getLineNumber() {
-		return lineNumber;
-	}
-
-	public LogEntryType getType() {
+	public EntryType getType() {
 		return type;
 	}
 
-	public void setType(LogEntryType type) {
+	public void setType(EntryType type) {
 		this.type = type;
+	}
+
+	public long getLineNumber() {
+		return lineNumber;
 	}
 
 	public Calendar getTime() {
@@ -80,9 +79,9 @@ public class LogEntry {
 	public void setResult(Result result) {
 		this.result = result;
 	}
-	
+
 	public String toString() {
-		return String.format("%s, %s, %s, %s, %s, %s, %s", lineNumber, time, source, target, ability, event, result); 
+		return String.format("ln:%s, time:%s, src:%s, trgt:%s, %s, %s, %s", lineNumber, DateFormat.getTimeInstance().format(time.getTime()), source, target, ability, event, result);
 	}
 
 }

@@ -1,8 +1,12 @@
 package swtor.parser.parser;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Pattern;
 
-import swtor.parser.constant.EffectType;
+import swtor.parser.constant.DamageType;
+import swtor.parser.constant.EntryType;
 import swtor.parser.constant.MitigationType;
 import swtor.parser.model.Actor;
 import swtor.parser.model.CombatEvent;
@@ -49,6 +53,20 @@ public class SimpleParser implements LogEntryParser {
 	}
 
 	private void parseTimestamp(String part) {
+		SimpleDateFormat format;
+		if (part.contains(" ")) {
+			format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		} else {
+			format = new SimpleDateFormat("HH:mm:ss.S");
+		}
+		try {
+			Date time = format.parse(part);
+			entry.getTime().setTime(time);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	private void parseActor(Actor actor, String string) {
@@ -78,6 +96,7 @@ public class SimpleParser implements LogEntryParser {
 			event.setTypeId(Long.valueOf(parts[1]));
 			event.setName(parts[2]);
 			event.setGameId(Long.valueOf(parts[3]));
+			entry.setType(EntryType.valueOfString(parts[2]));
 		}
 	}
 
@@ -100,7 +119,7 @@ public class SimpleParser implements LogEntryParser {
 					res.setMitigationType(MitigationType.valueOf(parts[1].substring(1).toUpperCase()));
 					res.setMitigateId(id);
 				} else {
-					res.setEffectType(EffectType.valueOf(parts[1].toUpperCase()));
+					res.setEffectType(DamageType.valueOf(parts[1].toUpperCase()));
 					res.setEffectId(id);
 				}
 			}

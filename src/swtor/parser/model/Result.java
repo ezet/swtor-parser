@@ -1,16 +1,15 @@
 package swtor.parser.model;
 
-import swtor.parser.constant.EffectType;
+import swtor.parser.constant.DamageType;
 import swtor.parser.constant.MitigationType;
-import swtor.parser.constant.ResultType;
+import swtor.parser.constant.EntryType;
 
 public class Result {
-	private ResultType resultType = ResultType.OTHER;
 
 	private int value;
 	private boolean critical;
 
-	private EffectType effectType = EffectType.NONE;
+	private DamageType effectType = DamageType.NONE;
 	private long effectId;
 
 	private MitigationType mitigationType = MitigationType.NONE;
@@ -21,14 +20,6 @@ public class Result {
 	private long absorbId;
 
 	private int threatDelta;
-
-	public ResultType getResultType() {
-		return resultType;
-	}
-
-	public void setResultType(ResultType resultType) {
-		this.resultType = resultType;
-	}
 
 	public int getValue() {
 		return value;
@@ -46,11 +37,11 @@ public class Result {
 		this.critical = critical;
 	}
 
-	public EffectType getEffectType() {
+	public DamageType getEffectType() {
 		return effectType;
 	}
 
-	public void setEffectType(EffectType effectType) {
+	public void setEffectType(DamageType effectType) {
 		this.effectType = effectType;
 	}
 
@@ -111,7 +102,7 @@ public class Result {
 	}
 	
 	public boolean isMitigate() {
-		return mitigationType == MitigationType.NONE;
+		return mitigationType != MitigationType.NONE;
 	}
 	
 	public String toString() {

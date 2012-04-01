@@ -1,5 +1,5 @@
 package swtor.parser.constant;
 
 public enum MitigationType {
-	MISS, GLANCE, DODGE, DEFLECT, PARRY, IMMUNE, NONE
+	MISS, GLANCE, DODGE, DEFLECT, PARRY, IMMUNE, RESIST, NONE
 }

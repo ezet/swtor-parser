@@ -1,5 +1,5 @@
 package swtor.parser.constant;
 
-public enum EffectType {
+public enum DamageType {
 	INTERNAL, ENERGY, KINETIC, ELEMENTAL, NONE
 }
