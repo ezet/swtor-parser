@@ -1,18 +1,10 @@
 package swtor.parser.model;
 
+import swtor.parser.constant.EffectType;
+import swtor.parser.constant.MitigationType;
+import swtor.parser.constant.ResultType;
+
 public class Result {
-	public enum MitigationType {
-		MISS, GLANCE, DODGE, DEFLECT, PARRY, IMMUNE, NONE
-	}
-
-	public enum EffectType {
-		INTERNAL, ENERGY, KINETIC, ELEMENTAL, NONE
-	}
-
-	public enum ResultType {
-		HEAL, DAMAGE, OTHER
-	}
-
 	private ResultType resultType = ResultType.OTHER;
 
 	private int value;
@@ -116,6 +108,10 @@ public class Result {
 
 	public void setThreatDelta(int threatDelta) {
 		this.threatDelta = threatDelta;
+	}
+	
+	public boolean isMitigate() {
+		return mitigationType == MitigationType.NONE;
 	}
 	
 	public String toString() {

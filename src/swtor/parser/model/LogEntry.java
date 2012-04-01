@@ -5,7 +5,7 @@ import java.util.Calendar;
 public class LogEntry {
 
 	public enum LogEntryType {
-		DAMAGE_DONE, HEALING_DONE, DAMAGE_RECEIVED, HEALING_RECEIVED, OTHER
+		DAMAGE, HEALING, DAMAGE_RECEIVED, HEALING_RECEIVED, OTHER
 	}
 
 	private final long lineNumber;

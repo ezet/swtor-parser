@@ -2,7 +2,6 @@ package swtor.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -13,13 +12,13 @@ import java.util.List;
 
 import swtor.parser.filter.InputFilter;
 import swtor.parser.model.LogEntry;
-import swtor.parser.parser.Parser;
+import swtor.parser.parser.LogEntryParser;
 import swtor.parser.parser.ParserFactory;
 import swtor.parser.utility.Logger;
 
-public class LogParser implements LogParserInterface {
+public class LogParser implements Parser {
 
-	private Parser parser = ParserFactory.getInstance();;
+	private LogEntryParser parser = ParserFactory.getInstance();;
 	private List<LogEntry> log = new ArrayList<>();
 	private Path path;
 	private List<InputFilter> inputfilters = new ArrayList<>();
@@ -49,15 +48,11 @@ public class LogParser implements LogParserInterface {
 	}
 
 	public void parse() throws IOException {
-		int size = estimateSize();
-		System.out.println(size);
-		System.out.println(count());
-		log = new ArrayList<>(size);
+		int size = estimateLines();
 		String line;
 		long start = System.currentTimeMillis();
 		try (BufferedReader reader = Files.newBufferedReader(path, Charset.defaultCharset())) {
-			// TODO implement static sizing by size
-
+			log = new ArrayList<>(size);
 			int currentLine = -1;
 			while ((line = reader.readLine()) != null) {
 				Logger.debug(line);
@@ -89,7 +84,7 @@ public class LogParser implements LogParserInterface {
 		return result;
 	}
 
-	private int estimateSize() {
+	private int estimateLines() {
 		int lines = 10000;
 		try {
 			long size = Files.size(path);
@@ -98,30 +93,6 @@ public class LogParser implements LogParserInterface {
 			// fail silently
 		}
 		return lines;
-	}
-
-	private int countChar() throws IOException {
-		try (InputStream is = Files.newInputStream(path)) {
-			byte[] c = new byte[1024];
-			int count = 0;
-			int readChars = 0;
-			while ((readChars = is.read(c)) != -1) {
-				for (int i = 0; i < readChars; ++i) {
-					if (c[i] == '\n')
-						++count;
-				}
-			}
-			return count;
-		}
-	}
-
-	private int count() throws IOException {
-		try (BufferedReader reader = Files.newBufferedReader(path, Charset.defaultCharset())) {
-			int lines = -1;
-			while (reader.readLine() != null)
-				++lines;
-			return lines;
-		}
 	}
 
 }

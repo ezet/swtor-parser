@@ -7,7 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import swtor.parser.model.LogEntry;
-import swtor.parser.parser.Parser;
+import swtor.parser.parser.LogEntryParser;
 import swtor.parser.parser.RegexParser;
 import swtor.parser.parser.SimpleParser;
 
@@ -15,8 +15,8 @@ public class LineParserTest {
 
 	LogEntry entry;
 
-	Parser regex = new RegexParser();
-	Parser simple = new SimpleParser();
+	LogEntryParser regex = new RegexParser();
+	LogEntryParser simple = new SimpleParser();
 
 	@Before
 	public void Before() {

@@ -2,7 +2,7 @@ package swtor.parser.parser;
 
 public class ParserFactory {
 	
-	public static Parser getInstance() {
+	public static LogEntryParser getInstance() {
 		// TODO implement
 		return new SimpleParser();
 	}

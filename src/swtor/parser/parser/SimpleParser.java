@@ -2,15 +2,15 @@ package swtor.parser.parser;
 
 import java.util.regex.Pattern;
 
+import swtor.parser.constant.EffectType;
+import swtor.parser.constant.MitigationType;
 import swtor.parser.model.Actor;
 import swtor.parser.model.CombatEvent;
 import swtor.parser.model.CombatEvent.EventType;
 import swtor.parser.model.LogEntry;
 import swtor.parser.model.Result;
-import swtor.parser.model.Result.EffectType;
-import swtor.parser.model.Result.MitigationType;
 
-public class SimpleParser implements Parser {
+public class SimpleParser implements LogEntryParser {
 
 	private LogEntry entry;
 	private static Pattern objectSeparator;
