@@ -1,24 +1,8 @@
 package swtor.parser.model;
 
-public class CombatEvent {
+import swtor.parser.constant.EventType;
 
-	public enum EventType {
-		REMOVE_EFFECT, APPLY_EFFECT, SPEND, RESTORE, OTHER;
-		
-		public static EventType valueOfString(String string) {
-			EventType type = OTHER;
-			if (string.equals("RemoveEffect")) {
-				type = REMOVE_EFFECT;
-			} else if (string.equals("ApplyEffect")) {
-				type = APPLY_EFFECT;
-			} else if (string.equals("Spend")) {
-				type = SPEND;
-			} else if (string.equals("RESTORE")) {
-				type = RESTORE;
-			}
-			return type;
-		}
-	}
+public class CombatEvent {
 
 	private EventType type;
 	private long typeId;
@@ -56,7 +40,7 @@ public class CombatEvent {
 	public void setGameId(long gameId) {
 		this.gameId = gameId;
 	}
-	
+
 	public String toString() {
 		return String.format("%s, %s", type, name);
 	}

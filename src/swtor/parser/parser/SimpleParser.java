@@ -7,10 +7,10 @@ import java.util.regex.Pattern;
 
 import swtor.parser.constant.DamageType;
 import swtor.parser.constant.EntryType;
+import swtor.parser.constant.EventType;
 import swtor.parser.constant.MitigationType;
 import swtor.parser.model.Actor;
 import swtor.parser.model.CombatEvent;
-import swtor.parser.model.CombatEvent.EventType;
 import swtor.parser.model.LogEntry;
 import swtor.parser.model.Result;
 

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import swtor.parser.filter.InputFilter;
+import swtor.parser.filter.NullAbilityFilter;
 import swtor.parser.model.LogEntry;
 import swtor.parser.parser.LogEntryParser;
 import swtor.parser.parser.ParserFactory;
@@ -34,7 +35,7 @@ public class LogParser implements Parser {
 	public LogParser(Path path) {
 		this.path = path;
 	}
-	
+
 	public List<LogEntry> getLog() {
 		return log;
 	}
@@ -52,26 +53,27 @@ public class LogParser implements Parser {
 	}
 
 	public void parse() throws IOException {
+		addInputFilter(new NullAbilityFilter());
 		int size = estimateLines();
-		String line;
 		long start = System.currentTimeMillis();
-		System.out.println(path.toString());
+		Logger.debug("parsing file: " + path);
 		try (BufferedReader reader = Files.newBufferedReader(path, Charset.defaultCharset())) {
 			log = new ArrayList<>(size);
-			int currentLine = -1;
+			int currentLine = 0;
+			String line;
 			while ((line = reader.readLine()) != null) {
-				Logger.debug(line);
+				Logger.debug("input: " + line);
 				LogEntry entry = new LogEntry(++currentLine);
 				parser.parse(entry, line);
 				if (processInputFilters(entry)) {
 					processOutputFilters(entry);
 					log.add(entry);
 				}
-				Logger.debug(entry);
+				Logger.debug("output: " + entry);
 			}
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("Execution time: " + (end - start) + " ms.");
+		Logger.debug("parse completed in: " + (end - start) + " ms.");
 	}
 
 	private void processOutputFilters(LogEntry entry) {
