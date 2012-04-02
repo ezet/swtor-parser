@@ -1,4 +1,4 @@
-[03/17/2012 10:40:15] [@Allusell] [@Allusell] [Sprint {810670782152704}] [Event {836045448945472}: AbilityActivate {836045448945479}] ()
+[03/17/2012 10:40:15] [@Allusell] [@Allusell] [Sprint {810670782152704}] [Event {836045448945472}: AbilityActivate {836045448945479}] () 
 [03/17/2012 10:40:15] [@Allusell] [@Allusell] [Sprint {810670782152704}] [ApplyEffect {836045448945477}: Sprint {810670782152704}] ()
 [03/17/2012 10:42:56] [@Allusell] [@Allusell] [Conversation {806968520343552}] [ApplyEffect {836045448945477}: In Conversation {806968520343876}] ()
 [03/17/2012 10:43:08] [@Allusell] [@Allusell] [Conversation {806968520343552}] [RemoveEffect {836045448945478}: In Conversation {806968520343876}] ()

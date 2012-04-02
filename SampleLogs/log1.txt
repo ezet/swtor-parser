@@ -1,4 +1,4 @@
-[03/17/2012 19:30:34] [@Argorash] [@Argorash] [Personal Vehicle {2176247043981312}] [RemoveEffect {836045448945478}: Personal Vehicle {2176247043981312}] ()
+[03/17/2012 19:30:34] [@Argorash] [@Argorash] [Personal Vehicle {2176247043981312}] [RemoveEffect {836045448945478}: Personal Vehicle {2176247043981312}] () 
 [03/17/2012 19:30:34] [@Argorash] [@Argorash] [Dessler Avenger {2534537510780928}] [Event {836045448945472}: AbilityDeactivate {836045448945480}] ()
 [03/17/2012 19:30:34] [@Argorash] [@Argorash] [Dessler Avenger {2534537510780928}] [Event {836045448945472}: AbilityDeactivate {836045448945480}] ()
 [03/17/2012 19:32:14] [@Argorash] [@Argorash] [Dessler Avenger {2534537510780928}] [Event {836045448945472}: AbilityActivate {836045448945479}] ()
