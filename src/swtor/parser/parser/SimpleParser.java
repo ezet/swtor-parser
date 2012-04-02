@@ -23,15 +23,10 @@ public class SimpleParser implements LogEntryParser {
 	private static Pattern idSplit;
 
 	static {
-
 		objectSeparator = Pattern.compile("[\\]<] ?");
-
 		propertySeparator = Pattern.compile(" ?[{}][ :]*");
-
 		idSplit = Pattern.compile(" \\{");
-
 		resultSplit = Pattern.compile(" ");
-
 	}
 
 	public SimpleParser() {
@@ -74,8 +69,12 @@ public class SimpleParser implements LogEntryParser {
 			String[] parts = idSplit.split(string);
 			actor.setName(parts[0].trim());
 			if (parts.length > 1) {
+				if (parts[1].contains(":")) {
+					actor.setCompanion(true);
+				}
 				actor.setGameId(Long.valueOf(parts[1].substring(0, parts[1].length() - 1)));
-				actor.setNpc(true);
+			} else {
+				actor.setPlayer(true);
 			}
 		}
 	}

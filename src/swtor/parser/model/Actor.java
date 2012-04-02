@@ -4,13 +4,14 @@ public class Actor {
 
 	private long gameId;
 	private String name;
-	private boolean npc;
+	private boolean player;
+	private boolean companion;
 
 	public long getGameId() {
 		return gameId;
 	}
 
-	public void setGameId(long gameId){
+	public void setGameId(long gameId) {
 		this.gameId = gameId;
 	}
 
@@ -22,14 +23,22 @@ public class Actor {
 		this.name = name;
 	}
 
-	public boolean isNpc() {
-		return npc;
+	public boolean isPlayer() {
+		return player;
 	}
 
-	public void setNpc(boolean npc) {
-		this.npc = npc;
+	public void setPlayer(boolean player) {
+		this.player = player;
 	}
-	
+
+	public boolean isCompanion() {
+		return companion;
+	}
+
+	public void setCompanion(boolean companion) {
+		this.companion = companion;
+	}
+
 	public String toString() {
 		return name;
 	}
