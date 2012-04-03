@@ -13,6 +13,7 @@ import swtor.parser.model.Actor;
 import swtor.parser.model.CombatEvent;
 import swtor.parser.model.LogEntry;
 import swtor.parser.model.Result;
+import swtor.parser.utility.Logger;
 
 public class SimpleParser implements LogEntryParser {
 
@@ -60,6 +61,7 @@ public class SimpleParser implements LogEntryParser {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			// throw InvalidFormatException
 		}
 
 	}

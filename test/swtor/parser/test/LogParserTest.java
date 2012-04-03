@@ -5,12 +5,9 @@ package swtor.parser.test;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.Test;
 
@@ -25,13 +22,12 @@ public class LogParserTest {
 
 	@Test
 	public void test() throws URISyntaxException {
-		Path path;
-		path = Paths.get("D:/Dev/Projects/SwtorParser/SampleLogs/");
-		try (DirectoryStream<Path> dir = Files.newDirectoryStream(path);) {
-			for (Path p : dir) {
+		File p = new File("D:/Dev/Projects/SwtorParser/SampleLogs/huge.txt");
+		try {
+//			for (File p : file.listFiles()) {
 				Logger.log(p);
 				new LogParser(p).parse();
-			}
+//			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("IO error");
