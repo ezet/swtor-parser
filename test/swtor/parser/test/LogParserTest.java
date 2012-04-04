@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 
 import swtor.parser.LogParser;
-import swtor.parser.utility.Logger;
+import swtor.parser.util.Logger;
 
 /**
  * @author Lars Kristian
@@ -22,16 +22,16 @@ public class LogParserTest {
 
 	@Test
 	public void test() throws URISyntaxException {
-		File p = new File("D:/Dev/Projects/SwtorParser/SampleLogs/huge.txt");
+		File file = new File("D:/Dev/Projects/SwtorParser/SampleLogs/");
 		try {
-//			for (File p : file.listFiles()) {
+			for (File p : file.listFiles()) {
 				Logger.log(p);
 				new LogParser(p).parse();
-//			}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("IO error");
 		}
-		
+
 	}
 }

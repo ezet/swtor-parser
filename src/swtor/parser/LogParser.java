@@ -10,15 +10,17 @@ import java.util.List;
 
 import swtor.parser.filter.InputFilter;
 import swtor.parser.filter.NullAbilityFilter;
+import swtor.parser.model.CombatLog;
 import swtor.parser.model.LogEntry;
 import swtor.parser.parser.LogEntryParser;
 import swtor.parser.parser.ParserFactory;
-import swtor.parser.utility.Logger;
+import swtor.parser.util.Logger;
 
 public class LogParser implements Parser {
 
 	private LogEntryParser parser = ParserFactory.getInstance();;
-	private List<LogEntry> log = new ArrayList<LogEntry>();
+	private CombatLog combatLog;
+	private List<LogEntry> entries;
 	// private Path path;
 	private File file;
 	private List<InputFilter> inputfilters = new ArrayList<InputFilter>();
@@ -40,9 +42,14 @@ public class LogParser implements Parser {
 	// public LogParser(Path path) {
 	// this.path = path;
 	// }
-
-	public List<LogEntry> getLog() {
-		return log;
+	
+	@Deprecated
+	public List<LogEntry> getEntries() {
+		return entries;
+	}
+	
+	public CombatLog getCombatLog() {
+		return combatLog;
 	}
 
 	public void addInputFilter(InputFilter filter) {
@@ -66,7 +73,7 @@ public class LogParser implements Parser {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(file), (int) (file.length() < 8192 ? file.length() : 8192));
-			log = new ArrayList<LogEntry>(size);
+			entries = new ArrayList<LogEntry>(size);
 			int currentLine = 0;
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -75,7 +82,7 @@ public class LogParser implements Parser {
 				parser.parse(entry, line);
 				if (processInputFilters(entry)) {
 					processOutputFilters(entry);
-					log.add(entry);
+					entries.add(entry);
 				}
 				Logger.debug(3, "output: ", entry);
 			}
@@ -85,6 +92,7 @@ public class LogParser implements Parser {
 		}
 		long end = System.currentTimeMillis();
 		Logger.debug("parse completed in: " + (end - start) + " ms.");
+		combatLog = new CombatLog(entries, file.getName());
 	}
 
 	private void processOutputFilters(LogEntry entry) {

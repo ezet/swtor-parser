@@ -13,7 +13,7 @@ import swtor.parser.model.Actor;
 import swtor.parser.model.CombatEvent;
 import swtor.parser.model.LogEntry;
 import swtor.parser.model.Result;
-import swtor.parser.utility.Logger;
+import swtor.parser.util.Logger;
 
 public class SimpleParser implements LogEntryParser {
 

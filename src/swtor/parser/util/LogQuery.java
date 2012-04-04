@@ -1,4 +1,4 @@
-package swtor.parser.utility;
+package swtor.parser.util;
 
 public class LogQuery {
 
