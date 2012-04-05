@@ -13,9 +13,8 @@ import swtor.parser.model.Actor;
 import swtor.parser.model.CombatEvent;
 import swtor.parser.model.LogEntry;
 import swtor.parser.model.Result;
-import swtor.parser.util.Logger;
 
-public class SimpleParser implements LogEntryParser {
+public class SplitParser implements LogEntryParser {
 
 	private LogEntry entry;
 	private static Pattern objectSeparator;
@@ -30,40 +29,29 @@ public class SimpleParser implements LogEntryParser {
 		resultSplit = Pattern.compile(" ");
 	}
 
-	public SimpleParser() {
-
+	public void parse(LogEntry entry, String line) throws Exception {
+			this.entry = entry;
+			String[] parts = objectSeparator.split(line.replace("[", ""));
+			parseTimestamp(parts[0]);
+			parseActor(entry.getSource(), parts[1]);
+			parseActor(entry.getTarget(), parts[2]);
+			parseAbility(parts[3]);
+			parseEvent(parts[4]);
+			parseResult(parts[5]);
+			if (parts.length > 6) {
+				parseThreatDelta(parts[6]);
+			}
 	}
 
-	public void parse(LogEntry entry, String line) {
-		this.entry = entry;
-		String[] parts = objectSeparator.split(line.replace("[", ""));
-		parseTimestamp(parts[0]);
-		parseActor(entry.getSource(), parts[1]);
-		parseActor(entry.getTarget(), parts[2]);
-		parseAbility(parts[3]);
-		parseEvent(parts[4]);
-		parseResult(parts[5]);
-		if (parts.length > 6) {
-			parseThreatDelta(parts[6]);
-		}
-	}
-
-	private void parseTimestamp(String part) {
+	private void parseTimestamp(String part) throws ParseException {
 		SimpleDateFormat format;
 		if (part.contains(" ")) {
 			format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		} else {
 			format = new SimpleDateFormat("HH:mm:ss.S");
 		}
-		try {
-			Date time = format.parse(part);
-			entry.getTime().setTime(time);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			// throw InvalidFormatException
-		}
-
+		Date time = format.parse(part);
+		entry.getTime().setTime(time);
 	}
 
 	private void parseActor(Actor actor, String string) {
@@ -118,17 +106,17 @@ public class SimpleParser implements LogEntryParser {
 				id = Long.valueOf(parts[2].substring(1, parts[2].length() - 2));
 				if (parts[1].charAt(0) == '-') {
 					res.setMitigationType(MitigationType.valueOf(parts[1].substring(1).toUpperCase()));
-					res.setMitigateId(id);
+					res.setMitigateGameId(id);
 				} else {
-					res.setEffectType(DamageType.valueOf(parts[1].toUpperCase()));
-					res.setEffectId(id);
+					res.setDamageType(DamageType.valueOf(parts[1].toUpperCase()));
+					res.setEffectGameId(id);
 				}
 			}
 			if (parts.length > 3) {
 				if (parts[3].charAt(0) == '-') {
 					id = Long.valueOf(parts[2].substring(1, parts[2].length() - 2));
 					res.setMitigationType(MitigationType.valueOf(parts[3].substring(1).toUpperCase()));
-					res.setMitigateId(id);
+					res.setMitigateGameId(id);
 				} else {
 					res.setAbsorb(true);
 					res.setAbsorbValue(Integer.valueOf(parts[3].substring(1)));

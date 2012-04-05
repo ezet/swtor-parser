@@ -5,7 +5,7 @@ import java.util.Calendar;
 
 import swtor.parser.constant.EntryType;
 
-public class LogEntry {
+public class LogEntry implements Model {
 
 	private EntryType type;
 	private final long lineNumber;

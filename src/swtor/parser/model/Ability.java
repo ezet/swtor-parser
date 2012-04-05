@@ -1,6 +1,6 @@
 package swtor.parser.model;
 
-public class Ability implements ModelInterface {
+public class Ability implements Model {
 
 	private long gameId;
 	private String name;

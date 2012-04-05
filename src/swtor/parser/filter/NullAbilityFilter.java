@@ -15,8 +15,5 @@ public class NullAbilityFilter implements InputFilter {
 		}
 		return true;
 	}
-	
-	
-	
 
 }

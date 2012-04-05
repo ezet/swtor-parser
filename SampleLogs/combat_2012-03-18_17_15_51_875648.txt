@@ -5531,4 +5531,3 @@
 [03/18/2012 18:47:48] [@Allusell] [@Allusell] [Telekinetic Throw {812856920506368}] [Event {836045448945472}: AbilityActivate {836045448945479}] ()
 [03/18/2012 18:47:48] [@Allusell] [@Allusell] [] [Spend {836045448945473}: Force {836045448938502}] (30)
 [03/18/2012 18:47:48] [@Allusell] [Justicar Security Droid {852525238452224}] [Telekinetic Throw {812856920506368}] [ApplyEffect {836045448945477}: Immobilized {812856920506656}] ()
-[03/18/2012 18:47:48] [@Allusell] [Justicar Security Droid {852525238452224}] [Force Technique {979789414400000}] [ApplyEffect {836045448945477}: Damage {836045448945501}] (24 kine

@@ -1,6 +1,6 @@
 package swtor.parser.model;
 
-public class Actor {
+public class Actor implements Model {
 
 	private long gameId;
 	private String name;

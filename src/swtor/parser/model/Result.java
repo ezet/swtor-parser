@@ -2,18 +2,17 @@ package swtor.parser.model;
 
 import swtor.parser.constant.DamageType;
 import swtor.parser.constant.MitigationType;
-import swtor.parser.constant.EntryType;
 
-public class Result {
+public class Result implements Model {
 
 	private int value;
 	private boolean critical;
 
 	private DamageType effectType = DamageType.NONE;
-	private long effectId;
+	private long effectGameId;
 
 	private MitigationType mitigationType = MitigationType.NONE;
-	private long mitigateId;
+	private long mitigateGameId;
 
 	private boolean absorb;
 	private int absorbValue;
@@ -41,16 +40,16 @@ public class Result {
 		return effectType;
 	}
 
-	public void setEffectType(DamageType effectType) {
+	public void setDamageType(DamageType effectType) {
 		this.effectType = effectType;
 	}
 
-	public long getEffectId() {
-		return effectId;
+	public long getEffectGameId() {
+		return effectGameId;
 	}
 
-	public void setEffectId(long effectId) {
-		this.effectId = effectId;
+	public void setEffectGameId(long effectId) {
+		this.effectGameId = effectId;
 	}
 
 	public MitigationType getMitigationType() {
@@ -61,12 +60,12 @@ public class Result {
 		this.mitigationType = mitigationType;
 	}
 
-	public long getMitigateId() {
-		return mitigateId;
+	public long getMitigateGameId() {
+		return mitigateGameId;
 	}
 
-	public void setMitigateId(long mitigateId) {
-		this.mitigateId = mitigateId;
+	public void setMitigateGameId(long mitigateId) {
+		this.mitigateGameId = mitigateId;
 	}
 
 	public boolean isAbsorb() {
@@ -100,12 +99,13 @@ public class Result {
 	public void setThreatDelta(int threatDelta) {
 		this.threatDelta = threatDelta;
 	}
-	
+
 	public boolean isMitigate() {
 		return mitigationType != MitigationType.NONE;
 	}
-	
+
 	public String toString() {
-		return String.format("%s, %s, %s, %s, %s, %s, %s", effectType, value, critical, effectType, mitigationType, absorbValue, threatDelta);
+		return String.format("%s, %s, %s, %s, %s, %s, %s", effectType, value, critical, effectType, mitigationType,
+				absorbValue, threatDelta);
 	}
 }

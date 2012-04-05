@@ -2,7 +2,7 @@ package swtor.parser.model;
 
 import swtor.parser.constant.EventType;
 
-public class CombatEvent {
+public class CombatEvent implements Model {
 
 	private EventType type;
 	private long typeId;
