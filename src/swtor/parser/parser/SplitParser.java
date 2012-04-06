@@ -9,10 +9,7 @@ import swtor.parser.constant.EffectType;
 import swtor.parser.constant.EntryType;
 import swtor.parser.constant.EventType;
 import swtor.parser.constant.MitigationType;
-import swtor.parser.model.Actor;
-import swtor.parser.model.CombatEvent;
 import swtor.parser.model.LogEntry;
-import swtor.parser.model.Result;
 
 public class SplitParser implements LogEntryParser {
 
@@ -30,17 +27,17 @@ public class SplitParser implements LogEntryParser {
 	}
 
 	public void parse(LogEntry entry, String line) throws Exception {
-			this.entry = entry;
-			String[] parts = objectSeparator.split(line.replace("[", ""));
-			parseTimestamp(parts[0]);
-			parseActor(entry.getSource(), parts[1]);
-			parseActor(entry.getTarget(), parts[2]);
-			parseAbility(parts[3]);
-			parseEvent(parts[4]);
-			parseResult(parts[5]);
-			if (parts.length > 6) {
-				parseThreatDelta(parts[6]);
-			}
+		this.entry = entry;
+		String[] parts = objectSeparator.split(line.replace("[", ""));
+		parseTimestamp(parts[0]);
+		parseSource(parts[1]);
+		parseTarget(parts[2]);
+		parseAbility(parts[3]);
+		parseEvent(parts[4]);
+		parseResult(parts[5]);
+		if (parts.length > 6) {
+			parseThreatDelta(parts[6]);
+		}
 	}
 
 	private void parseTimestamp(String part) throws ParseException {
@@ -54,17 +51,32 @@ public class SplitParser implements LogEntryParser {
 		entry.getTime().setTime(time);
 	}
 
-	private void parseActor(Actor actor, String string) {
+	private void parseSource(String string) {
 		if (!string.isEmpty()) {
 			String[] parts = idSplit.split(string);
-			actor.setName(parts[0].trim());
+			entry.setSource(parts[0].trim());
 			if (parts.length > 1) {
 				if (parts[1].contains(":")) {
-					actor.setCompanion(true);
+					entry.setSourceIsCompanion(true);
 				}
-				actor.setGameId(Long.valueOf(parts[1].substring(0, parts[1].length() - 1)));
+				entry.setSourceId(Long.valueOf(parts[1].substring(0, parts[1].length() - 1)));
 			} else {
-				actor.setPlayer(true);
+				entry.setSourceIsPlayer(true);
+			}
+		}
+	}
+
+	private void parseTarget(String string) {
+		if (!string.isEmpty()) {
+			String[] parts = idSplit.split(string);
+			entry.setTarget(parts[0].trim());
+			if (parts.length > 1) {
+				if (parts[1].contains(":")) {
+					entry.setTargetIsCompanion(true);
+				}
+				entry.setTargetId(Long.valueOf(parts[1].substring(0, parts[1].length() - 1)));
+			} else {
+				entry.setTargetIsPlayer(true);
 			}
 		}
 	}
@@ -72,19 +84,18 @@ public class SplitParser implements LogEntryParser {
 	private void parseAbility(String part) {
 		if (!part.isEmpty()) {
 			String[] parts = idSplit.split(part);
-			entry.getAbility().setName(parts[0].trim());
-			entry.getAbility().setGameId(Long.valueOf(parts[1].substring(0, parts[1].length() - 1)));
+			entry.setAbility(parts[0].trim());
+			entry.setAbilityId(Long.valueOf(parts[1].substring(0, parts[1].length() - 1)));
 		}
 	}
 
 	private void parseEvent(String part) {
 		if (!part.isEmpty()) {
-			CombatEvent event = entry.getEvent();
 			String parts[] = propertySeparator.split(part);
-			event.setType(EventType.valueOfString(parts[0]));
-			event.setTypeId(Long.valueOf(parts[1]));
-			event.setName(parts[2]);
-			event.setGameId(Long.valueOf(parts[3]));
+			entry.setEventType(EventType.valueOfString(parts[0]));
+			entry.setEventTypeId(Long.valueOf(parts[1]));
+			entry.setEventName(parts[2]);
+			entry.setEventId(Long.valueOf(parts[3]));
 			entry.setType(EntryType.valueOfString(parts[2]));
 		}
 	}
@@ -92,43 +103,42 @@ public class SplitParser implements LogEntryParser {
 	private void parseResult(String part) {
 		if (part.length() > 3) {
 			String[] parts = resultSplit.split(part);
-			Result res = entry.getResult();
 			long id = 0;
 			String value = parts[0].replaceAll("\\)", "");
 			if (parts[0].charAt(value.length() - 1) == '*') {
-				res.setCritical(true);
-				res.setValue(Integer.valueOf(value.substring(1, value.length() - 1)));
+				entry.setCritical(true);
+				entry.setValue(Integer.valueOf(value.substring(1, value.length() - 1)));
 			} else {
-				res.setValue(Integer.valueOf(value.substring(1, value.length())));
+				entry.setValue(Integer.valueOf(value.substring(1, value.length())));
 
 			}
 			if (parts.length > 2) {
 				id = Long.valueOf(parts[2].substring(1, parts[2].length() - 2));
 				if (parts[1].charAt(0) == '-') {
-					res.setMitigationType(MitigationType.valueOf(parts[1].substring(1).toUpperCase()));
-					res.setMitigateGameId(id);
+					entry.setMitigationType(MitigationType.valueOf(parts[1].substring(1).toUpperCase()));
+					entry.setMitigateGameId(id);
 				} else {
-					res.setDamageType(EffectType.valueOf(parts[1].toUpperCase()));
-					res.setEffectGameId(id);
+					entry.setEffectType(EffectType.valueOf(parts[1].toUpperCase()));
+					entry.setEffectId(id);
 				}
 			}
 			if (parts.length > 3) {
 				if (parts[3].charAt(0) == '-') {
 					id = Long.valueOf(parts[2].substring(1, parts[2].length() - 2));
-					res.setMitigationType(MitigationType.valueOf(parts[3].substring(1).toUpperCase()));
-					res.setMitigateGameId(id);
+					entry.setMitigationType(MitigationType.valueOf(parts[3].substring(1).toUpperCase()));
+					entry.setMitigateGameId(id);
 				} else {
-					res.setAbsorb(true);
-					res.setAbsorbValue(Integer.valueOf(parts[3].substring(1)));
+					entry.setAbsorb(true);
+					entry.setAbsorbValue(Integer.valueOf(parts[3].substring(1)));
 					id = Long.valueOf(parts[5].substring(1, parts[5].indexOf('}')));
-					res.setAbsorbId(id);
+					entry.setAbsorbId(id);
 				}
 			}
 			if (parts.length > 6) {
-				res.setAbsorb(true);
-				res.setAbsorbValue(Integer.valueOf(parts[5].substring(1)));
+				entry.setAbsorb(true);
+				entry.setAbsorbValue(Integer.valueOf(parts[5].substring(1)));
 				id = Long.valueOf(parts[7].substring(1, parts[7].indexOf('}')));
-				res.setAbsorbId(id);
+				entry.setAbsorbId(id);
 			}
 
 		}
@@ -138,7 +148,7 @@ public class SplitParser implements LogEntryParser {
 	private void parseThreatDelta(String part) {
 		if (!part.isEmpty()) {
 			int dThreat = Integer.valueOf(part.substring(0, part.length() - 1));
-			entry.getResult().setThreatDelta(dThreat);
+			entry.setThreatDelta(dThreat);
 		}
 	}
 }

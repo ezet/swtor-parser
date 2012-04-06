@@ -7,35 +7,35 @@ public class Actor implements Model {
 	private boolean player;
 	private boolean companion;
 
-	public long getGameId() {
+	long getId() {
 		return gameId;
 	}
 
-	public void setGameId(long gameId) {
+	void setId(long gameId) {
 		this.gameId = gameId;
 	}
 
-	public String getName() {
+	String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	void setName(String name) {
 		this.name = name;
 	}
 
-	public boolean isPlayer() {
+	boolean isPlayer() {
 		return player;
 	}
 
-	public void setPlayer(boolean player) {
+	void setPlayer(boolean player) {
 		this.player = player;
 	}
 
-	public boolean isCompanion() {
+	boolean isCompanion() {
 		return companion;
 	}
 
-	public void setCompanion(boolean companion) {
+	void setCompanion(boolean companion) {
 		this.companion = companion;
 	}
 

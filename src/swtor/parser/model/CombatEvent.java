@@ -9,35 +9,35 @@ public class CombatEvent implements Model {
 	private String name;
 	private long gameId;
 
-	public EventType getType() {
+	EventType getType() {
 		return type;
 	}
 
-	public void setType(EventType type) {
+	void setType(EventType type) {
 		this.type = type;
 	}
 
-	public long getTypeId() {
+	long getTypeId() {
 		return typeId;
 	}
 
-	public void setTypeId(long typeId) {
+	void setTypeId(long typeId) {
 		this.typeId = typeId;
 	}
 
-	public String getName() {
+	String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	void setName(String name) {
 		this.name = name;
 	}
 
-	public long getGameId() {
+	long getId() {
 		return gameId;
 	}
 
-	public void setGameId(long gameId) {
+	void setId(long gameId) {
 		this.gameId = gameId;
 	}
 

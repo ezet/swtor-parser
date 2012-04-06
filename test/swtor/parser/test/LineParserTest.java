@@ -9,11 +9,10 @@ import swtor.parser.constant.EffectType;
 import swtor.parser.constant.EventType;
 import swtor.parser.constant.MitigationType;
 import swtor.parser.model.LogEntry;
-import swtor.parser.parser.RegexParser;
 import swtor.parser.parser.LogEntryParser;
+import swtor.parser.parser.RegexParser;
 import swtor.parser.parser.SafeParser;
 import swtor.parser.parser.SplitParser;
-import swtor.parser.util.Logger;
 
 public class LineParserTest {
 
@@ -34,23 +33,23 @@ public class LineParserTest {
 	public void testDamageDone() {
 		line = "[03/17/2012 19:49:20] [@Source] [@Target:Companion {123451235123123}] [Series of Shots (burning)    {2299572734918656}] [ApplyEffect {836045448945477}: Damage [Tech] (burning) {836045448945501}] (234* energy {836045448940874} -glance {836045448945509} (234 absorbed {836045448945511})) <234>";
 		parse();
-		assertEquals("@Source", entry.getSource().getName());
-		assertTrue(entry.getSource().isPlayer());
-		assertFalse(entry.getSource().isCompanion());
-		assertEquals("@Target:Companion", entry.getTarget().getName());
-		assertFalse(entry.getTarget().isPlayer());
-		assertTrue(entry.getTarget().isCompanion());
-		assertEquals("Series of Shots (burning)", entry.getAbility().getName());
-		assertEquals(EventType.APPLY_EFFECT, entry.getEvent().getType());
-		assertEquals("Damage [Tech] (burning)", entry.getEvent().getName());
-		assertEquals(234, entry.getResult().getValue());
-		assertTrue(entry.getResult().isCritical());
-		assertEquals(EffectType.ENERGY, entry.getResult().getEffectType());
-		assertEquals(MitigationType.GLANCE, entry.getResult().getMitigationType());
-		assertTrue(entry.getResult().isMitigate());
-		assertEquals(234, entry.getResult().getAbsorbValue());
-		assertTrue(entry.getResult().isAbsorb());
-		assertEquals(234, entry.getResult().getThreatDelta());
+		assertEquals("@Source", entry.getSource());
+		assertTrue(entry.sourceIsPlayer());
+		assertFalse(entry.sourceIsCompanion());
+		assertEquals("@Target:Companion", entry.getTarget());
+		assertFalse(entry.targetIsPlayer());
+		assertTrue(entry.targetIsCompanion());
+		assertEquals("Series of Shots (burning)", entry.getAbility());
+		assertEquals(EventType.APPLY_EFFECT, entry.getEventType());
+		assertEquals("Damage [Tech] (burning)", entry.getEventName());
+		assertEquals(234, entry.getValue());
+		assertTrue(entry.isCritical());
+		assertEquals(EffectType.ENERGY, entry.getEffectType());
+		assertEquals(MitigationType.GLANCE, entry.getMitigationType());
+		assertTrue(entry.isMitigate());
+		assertEquals(234, entry.getAbsorbValue());
+		assertTrue(entry.isAbsorb());
+		assertEquals(234, entry.getThreatDelta());
 	}
 
 	@Test
@@ -63,7 +62,6 @@ public class LineParserTest {
 	public void testApplyEffect() {
 		line = "[03/18/2012 20:27:57] [Hybrid Rakghoul Techmaster {2898192391733248}] [@Evianir] [Smoke Grenade {2848396540903424}] [ApplyEffect {836045448945477}: Accuracy Reduced [Tech] {2848396540903685}] ()";
 		parse();
-		assertEquals("Threat", entry.getResult().getThreatDelta(), 0);
 	}
 
 	@Test

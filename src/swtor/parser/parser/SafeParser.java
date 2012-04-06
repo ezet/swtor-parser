@@ -10,10 +10,7 @@ import swtor.parser.constant.EffectType;
 import swtor.parser.constant.EntryType;
 import swtor.parser.constant.EventType;
 import swtor.parser.constant.MitigationType;
-import swtor.parser.model.Actor;
-import swtor.parser.model.CombatEvent;
 import swtor.parser.model.LogEntry;
-import swtor.parser.model.Result;
 
 public class SafeParser implements LogEntryParser {
 
@@ -34,8 +31,8 @@ public class SafeParser implements LogEntryParser {
 		Matcher m = entryPattern.matcher(line);
 		m.matches();
 		parseTimestamp(m.group(1));
-		parseActor(entry.getSource(), m.group(2));
-		parseActor(entry.getTarget(), m.group(3));
+		parseActor(m.group(2), 0);
+		parseActor(m.group(3), 1);
 		parseAbility(m.group(4));
 		parseEventType(m.group(5));
 		parseEventName(m.group(6));
@@ -56,19 +53,31 @@ public class SafeParser implements LogEntryParser {
 		entry.getTime().setTime(time);
 	}
 
-	private void parseActor(Actor actor, String part) {
+	private void parseActor(String part, int actor) {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = idPattern.matcher(part);
 			m.matches();
 			String name = m.group(1);
-			actor.setName(name);
-			if (!name.isEmpty() && name.contains(":")) {
-				actor.setCompanion(true);
-			}
-			if (m.group(2) != null) {
-				actor.setGameId(Long.valueOf(m.group(2)));
+			if (actor == 0) {
+				entry.setSource(name);
+				if (!name.isEmpty() && name.contains(":")) {
+					entry.setSourceIsCompanion(true);
+				}
+				if (m.group(2) != null) {
+					entry.setSourceId(Long.valueOf(m.group(2)));
+				} else {
+					entry.setSourceIsPlayer(true);
+				}
 			} else {
-				actor.setPlayer(true);
+				entry.setTarget(name);
+				if (!name.isEmpty() && name.contains(":")) {
+					entry.setTargetIsCompanion(true);
+				}
+				if (m.group(2) != null) {
+					entry.setTargetId(Long.valueOf(m.group(2)));
+				} else {
+					entry.setTargetIsPlayer(true);
+				}
 			}
 		}
 	}
@@ -77,9 +86,9 @@ public class SafeParser implements LogEntryParser {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = idPattern.matcher(part);
 			m.matches();
-			entry.getAbility().setName(m.group(1));
+			entry.setAbility(m.group(1));
 			if (m.group(2) != null) {
-				entry.getAbility().setGameId(Long.valueOf(m.group(2)));
+				entry.setAbilityId(Long.valueOf(m.group(2)));
 			}
 		}
 	}
@@ -88,10 +97,9 @@ public class SafeParser implements LogEntryParser {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = idPattern.matcher(part);
 			m.matches();
-			CombatEvent event = entry.getEvent();
-			event.setType(EventType.valueOfString(m.group(1)));
+			entry.setEventType(EventType.valueOfString(m.group(1)));
 			if (m.group(2) != null) {
-				event.setTypeId(Long.valueOf(m.group(2)));
+				entry.setEventTypeId(Long.valueOf(m.group(2)));
 			}
 		}
 	}
@@ -100,10 +108,10 @@ public class SafeParser implements LogEntryParser {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = idPattern.matcher(part);
 			m.matches();
-			entry.getEvent().setName(m.group(1));
+			entry.setEventName(m.group(1));
 			entry.setType(EntryType.valueOfString(m.group(1)));
 			if (m.group(2) != null) {
-				entry.getEvent().setGameId(Long.valueOf(m.group(2)));
+				entry.setEventId(Long.valueOf(m.group(2)));
 			}
 		}
 	}
@@ -113,12 +121,11 @@ public class SafeParser implements LogEntryParser {
 
 			Matcher m = valuePattern.matcher(part);
 			m.matches();
-			Result res = entry.getResult();
-			res.setValue(Integer.valueOf(m.group(1)));
+			entry.setValue(Integer.valueOf(m.group(1)));
 			if (part.contains("*"))
-				res.setCritical(true);
+				entry.setCritical(true);
 			if (m.group(2) != null) {
-				res.setDamageType(EffectType.valueOf(m.group(2).toUpperCase()));
+				entry.setEffectType(EffectType.valueOf(m.group(2).toUpperCase()));
 			}
 		}
 	}
@@ -128,10 +135,10 @@ public class SafeParser implements LogEntryParser {
 			Matcher m = idPattern.matcher(part);
 			m.matches();
 			if (m.group(1) != null) {
-				entry.getResult().setMitigationType(MitigationType.valueOf(m.group(1).toUpperCase()));
+				entry.setMitigationType(MitigationType.valueOf(m.group(1).toUpperCase()));
 			}
 			if (m.group(2) != null) {
-				entry.getResult().setMitigateGameId(Long.valueOf(m.group(2).toUpperCase()));
+				entry.setMitigateGameId(Long.valueOf(m.group(2).toUpperCase()));
 			}
 		}
 	}
@@ -140,15 +147,15 @@ public class SafeParser implements LogEntryParser {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = valuePattern.matcher(part);
 			m.matches();
-			entry.getResult().setAbsorbValue(Integer.valueOf(m.group(1)));
-			entry.getResult().setAbsorbId(Long.valueOf(m.group(3)));
-			entry.getResult().setAbsorb(true);
+			entry.setAbsorbValue(Integer.valueOf(m.group(1)));
+			entry.setAbsorbId(Long.valueOf(m.group(3)));
+			entry.setAbsorb(true);
 		}
 	}
 
 	private void parseThreatDelta(String part) {
 		if (part != null && !part.isEmpty()) {
-			entry.getResult().setThreatDelta(Integer.valueOf(part));
+			entry.setThreatDelta(Integer.valueOf(part));
 		}
 	}
 }

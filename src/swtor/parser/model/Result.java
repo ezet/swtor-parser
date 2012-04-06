@@ -20,87 +20,87 @@ public class Result implements Model {
 
 	private int threatDelta;
 
-	public int getValue() {
+	int getValue() {
 		return value;
 	}
 
-	public void setValue(int value) {
+	void setValue(int value) {
 		this.value = value;
 	}
 
-	public boolean isCritical() {
+	boolean isCritical() {
 		return critical;
 	}
 
-	public void setCritical(boolean critical) {
+	void setCritical(boolean critical) {
 		this.critical = critical;
 	}
 
-	public EffectType getEffectType() {
+	EffectType getEffectType() {
 		return effectType;
 	}
 
-	public void setDamageType(EffectType effectType) {
+	void setEffectType(EffectType effectType) {
 		this.effectType = effectType;
 	}
 
-	public long getEffectGameId() {
+	long getEffectId() {
 		return effectGameId;
 	}
 
-	public void setEffectGameId(long effectId) {
+	void setEffectId(long effectId) {
 		this.effectGameId = effectId;
 	}
 
-	public MitigationType getMitigationType() {
+	MitigationType getMitigationType() {
 		return mitigationType;
 	}
 
-	public void setMitigationType(MitigationType mitigationType) {
+	void setMitigationType(MitigationType mitigationType) {
 		this.mitigationType = mitigationType;
 	}
 
-	public long getMitigateGameId() {
+	long getMitigateGameId() {
 		return mitigateGameId;
 	}
 
-	public void setMitigateGameId(long mitigateId) {
+	void setMitigateGameId(long mitigateId) {
 		this.mitigateGameId = mitigateId;
 	}
 
-	public boolean isAbsorb() {
+	boolean isAbsorb() {
 		return absorb;
 	}
 
-	public void setAbsorb(boolean absorb) {
+	void setAbsorb(boolean absorb) {
 		this.absorb = absorb;
 	}
 
-	public int getAbsorbValue() {
+	int getAbsorbValue() {
 		return absorbValue;
 	}
 
-	public void setAbsorbValue(int absorbValue) {
+	void setAbsorbValue(int absorbValue) {
 		this.absorbValue = absorbValue;
 	}
 
-	public long getAbsorbId() {
+	long getAbsorbId() {
 		return absorbId;
 	}
 
-	public void setAbsorbId(long absorbId) {
+	void setAbsorbId(long absorbId) {
 		this.absorbId = absorbId;
 	}
 
-	public int getThreatDelta() {
+	int getThreatDelta() {
 		return threatDelta;
 	}
 
-	public void setThreatDelta(int threatDelta) {
+	void setThreatDelta(int threatDelta) {
 		this.threatDelta = threatDelta;
 	}
 
-	public boolean isMitigate() {
+	boolean isMitigate() {
 		return mitigationType != MitigationType.NONE;
 	}
 
