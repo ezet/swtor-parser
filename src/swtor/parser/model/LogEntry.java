@@ -127,12 +127,12 @@ public class LogEntry implements Model {
 		result.setMitigationType(mitigationType);
 	}
 
-	public long getMitigateGameId() {
-		return result.getMitigateGameId();
+	public long getMitigationId() {
+		return result.getMitigationId();
 	}
 
-	public void setMitigateGameId(long mitigateId) {
-		result.setMitigateGameId(mitigateId);
+	public void setMitigationId(long mitigationId) {
+		result.setMitigationId(mitigationId);
 	}
 
 	public void setAbsorb(boolean absorb) {

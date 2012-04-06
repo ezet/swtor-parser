@@ -1,5 +1,41 @@
 package swtor.parser.constant;
 
+import java.util.EnumSet;
+
 public enum MitigationType {
-	MISS, GLANCE, DODGE, DEFLECT, PARRY, IMMUNE, RESIST, NONE
+	MISS(836045448945502L), GLANCE(836045448945509L), DODGE(836045448945505L), DEFLECT(836045448945508L), PARRY(
+			836045448945503L), IMMUNE(836045448945506L), RESIST(836045448945507L), NONE(0L), UNKNOWN(0L);
+
+	private long id;
+	private String name;
+
+	private MitigationType(long id) {
+		this.id = id;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public static MitigationType valueOfId(long id, String name) {
+		for (final MitigationType type : EnumSet.allOf(MitigationType.class)) {
+			if (type.id == id) {
+				type.name = name;
+				return type;
+			}
+		}
+		// TODO add exception if a new entry is found ?
+		MitigationType type = UNKNOWN;
+		type.id = id;
+		return type;
+	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
 }

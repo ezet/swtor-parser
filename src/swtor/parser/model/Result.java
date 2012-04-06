@@ -9,10 +9,10 @@ public class Result implements Model {
 	private boolean critical;
 
 	private EffectType effectType = EffectType.NONE;
-	private long effectGameId;
+	private long effectId;
 
 	private MitigationType mitigationType = MitigationType.NONE;
-	private long mitigateGameId;
+	private long mitigationId;
 
 	private boolean absorb;
 	private int absorbValue;
@@ -45,11 +45,11 @@ public class Result implements Model {
 	}
 
 	long getEffectId() {
-		return effectGameId;
+		return effectId;
 	}
 
 	void setEffectId(long effectId) {
-		this.effectGameId = effectId;
+		this.effectId = effectId;
 	}
 
 	MitigationType getMitigationType() {
@@ -60,12 +60,12 @@ public class Result implements Model {
 		this.mitigationType = mitigationType;
 	}
 
-	long getMitigateGameId() {
-		return mitigateGameId;
+	long getMitigationId() {
+		return mitigationId;
 	}
 
-	void setMitigateGameId(long mitigateId) {
-		this.mitigateGameId = mitigateId;
+	void setMitigationId(long mitigateId) {
+		this.mitigationId = mitigateId;
 	}
 
 	boolean isAbsorb() {

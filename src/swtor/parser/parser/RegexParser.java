@@ -115,9 +115,9 @@ public class RegexParser implements LogEntryParser {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = idPattern.matcher(part);
 			m.find();
-			entry.setEventType(EventType.valueOfString(m.group(1)));
 			if (m.group(2) != null) {
 				entry.setEventTypeId(Long.valueOf(m.group(2)));
+				entry.setEventType(EventType.valueOfId(entry.getEventTypeId(), m.group(1)));
 			}
 		}
 	}
@@ -127,9 +127,9 @@ public class RegexParser implements LogEntryParser {
 			Matcher m = idPattern.matcher(part);
 			m.find();
 			entry.setEventName(m.group(1));
-			entry.setType(EntryType.valueOfString(m.group(1)));
 			if (m.group(2) != null) {
 				entry.setEventId(Long.valueOf(m.group(2)));
+				entry.setType(EntryType.valueOfId(entry.getEventId(), m.group(1)));
 			}
 		}
 	}
@@ -141,8 +141,9 @@ public class RegexParser implements LogEntryParser {
 			entry.setValue(Integer.valueOf(m.group(1)));
 			if (part.contains("*"))
 				entry.setCritical(true);
-			if (m.group(2) != null) {
-				entry.setEffectType(EffectType.valueOf(m.group(2).toUpperCase()));
+			if (m.group(2) != null && m.group(3) != null) {
+				entry.setEffectId(Long.valueOf(m.group(3)));
+				entry.setEffectType(EffectType.valueOfId(entry.getEffectId(), m.group(2)));
 			}
 		}
 	}
@@ -151,12 +152,10 @@ public class RegexParser implements LogEntryParser {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = idPattern.matcher(part);
 			m.find();
-			if (m.group(1) != null) {
-				entry.setMitigationType(MitigationType.valueOf(m.group(1).toUpperCase()));
-			}
-			if (m.group(2) != null) {
-				entry.setMitigateGameId(Long.valueOf(m.group(2).toUpperCase()));
-			}
+//			if (m.group(1) != null && m.group(2) != null) {
+				entry.setMitigationId(Long.valueOf(m.group(2).toUpperCase()));
+				entry.setMitigationType(MitigationType.valueOfId(entry.getMitigationId(), m.group(1)));
+//			}
 		}
 	}
 

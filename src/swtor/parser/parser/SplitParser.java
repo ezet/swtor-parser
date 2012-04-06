@@ -10,6 +10,7 @@ import swtor.parser.constant.EntryType;
 import swtor.parser.constant.EventType;
 import swtor.parser.constant.MitigationType;
 import swtor.parser.model.LogEntry;
+import swtor.parser.util.Logger;
 
 public class SplitParser implements LogEntryParser {
 
@@ -56,7 +57,7 @@ public class SplitParser implements LogEntryParser {
 			String[] parts = idSplit.split(string);
 			entry.setSource(parts[0].trim());
 			if (parts.length > 1) {
-				if (parts[1].contains(":")) {
+				if (parts[0].contains(":")) {
 					entry.setSourceIsCompanion(true);
 				}
 				entry.setSourceId(Long.valueOf(parts[1].substring(0, parts[1].length() - 1)));
@@ -71,7 +72,7 @@ public class SplitParser implements LogEntryParser {
 			String[] parts = idSplit.split(string);
 			entry.setTarget(parts[0].trim());
 			if (parts.length > 1) {
-				if (parts[1].contains(":")) {
+				if (parts[0].contains(":")) {
 					entry.setTargetIsCompanion(true);
 				}
 				entry.setTargetId(Long.valueOf(parts[1].substring(0, parts[1].length() - 1)));
@@ -92,11 +93,11 @@ public class SplitParser implements LogEntryParser {
 	private void parseEvent(String part) {
 		if (!part.isEmpty()) {
 			String parts[] = propertySeparator.split(part);
-			entry.setEventType(EventType.valueOfString(parts[0]));
 			entry.setEventTypeId(Long.valueOf(parts[1]));
+			entry.setEventType(EventType.valueOfId(entry.getEventTypeId(), parts[0]));
 			entry.setEventName(parts[2]);
 			entry.setEventId(Long.valueOf(parts[3]));
-			entry.setType(EntryType.valueOfString(parts[2]));
+			entry.setType(EntryType.valueOfId(entry.getEventId(), parts[2]));
 		}
 	}
 
@@ -113,10 +114,10 @@ public class SplitParser implements LogEntryParser {
 
 			}
 			if (parts.length > 2) {
-				id = Long.valueOf(parts[2].substring(1, parts[2].length() - 2));
+				id = Long.valueOf(parts[2].substring(1, parts[2].length() - 1));
 				if (parts[1].charAt(0) == '-') {
-					entry.setMitigationType(MitigationType.valueOf(parts[1].substring(1).toUpperCase()));
-					entry.setMitigateGameId(id);
+					entry.setMitigationId(id);
+					entry.setMitigationType(MitigationType.valueOfId(entry.getMitigationId(), parts[1].substring(1).toUpperCase()));
 				} else {
 					entry.setEffectType(EffectType.valueOf(parts[1].toUpperCase()));
 					entry.setEffectId(id);
@@ -124,9 +125,9 @@ public class SplitParser implements LogEntryParser {
 			}
 			if (parts.length > 3) {
 				if (parts[3].charAt(0) == '-') {
-					id = Long.valueOf(parts[2].substring(1, parts[2].length() - 2));
-					entry.setMitigationType(MitigationType.valueOf(parts[3].substring(1).toUpperCase()));
-					entry.setMitigateGameId(id);
+					id = Long.valueOf(parts[4].substring(1, parts[4].length() - 1));
+					entry.setMitigationId(id);
+					entry.setMitigationType(MitigationType.valueOfId(entry.getMitigationId(), parts[3].substring(1).toUpperCase()));
 				} else {
 					entry.setAbsorb(true);
 					entry.setAbsorbValue(Integer.valueOf(parts[3].substring(1)));
