@@ -117,7 +117,7 @@ public class SplitParser implements LogEntryParser {
 				id = Long.valueOf(parts[2].substring(1, parts[2].length() - 1));
 				if (parts[1].charAt(0) == '-') {
 					entry.setMitigationId(id);
-					entry.setMitigationType(MitigationType.valueOfId(entry.getMitigationId(), parts[1].substring(1).toUpperCase()));
+					entry.setMitigationType(MitigationType.valueOfId(entry.getMitigationId(), parts[1].substring(1)));
 				} else {
 					entry.setEffectType(EffectType.valueOf(parts[1].toUpperCase()));
 					entry.setEffectId(id);
@@ -127,7 +127,7 @@ public class SplitParser implements LogEntryParser {
 				if (parts[3].charAt(0) == '-') {
 					id = Long.valueOf(parts[4].substring(1, parts[4].length() - 1));
 					entry.setMitigationId(id);
-					entry.setMitigationType(MitigationType.valueOfId(entry.getMitigationId(), parts[3].substring(1).toUpperCase()));
+					entry.setMitigationType(MitigationType.valueOfId(entry.getMitigationId(), parts[3].substring(1)));
 				} else {
 					entry.setAbsorb(true);
 					entry.setAbsorbValue(Integer.valueOf(parts[3].substring(1)));

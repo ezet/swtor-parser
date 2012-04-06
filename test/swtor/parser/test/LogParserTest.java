@@ -24,15 +24,15 @@ public class LogParserTest {
 	public void test() {
 		try {
 			File file = new File("D:/Dev/Projects/SwtorParser/SampleLogs/");
-//			file = new File("D:/Dev/Projects/SwtorParser/SampleLogs/combat_2012-03-17_10_39_06_966767.txt");
-//			file = new File("D:/Dev/Projects/SwtorParser/SampleLogs/huge.txt");
-//			new LogParser(file).parse();
+			// file = new
+			// File("D:/Dev/Projects/SwtorParser/SampleLogs/combat_2012-03-17_10_39_06_966767.txt");
+			// file = new
+			// File("D:/Dev/Projects/SwtorParser/SampleLogs/huge.txt");
+			// new LogParser(file).parse();
 
 			for (File p : file.listFiles()) {
 				Logger.log(p);
-				if (!p.getName().equals("german.txt")) {
-					new LogParser(p).parse();
-				}
+				new LogParser(p).parse();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

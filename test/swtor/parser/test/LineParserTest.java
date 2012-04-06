@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import swtor.parser.constant.EffectType;
+import swtor.parser.constant.EntryType;
 import swtor.parser.constant.EventType;
 import swtor.parser.constant.MitigationType;
 import swtor.parser.model.LogEntry;
@@ -13,6 +14,7 @@ import swtor.parser.parser.LogEntryParser;
 import swtor.parser.parser.RegexParser;
 import swtor.parser.parser.SafeParser;
 import swtor.parser.parser.SplitParser;
+import swtor.parser.util.Logger;
 
 public class LineParserTest {
 
@@ -24,15 +26,16 @@ public class LineParserTest {
 	private LogEntryParser regex = new RegexParser();
 
 	@Before
-	public void Before() {
+	public void initialize() {
 		entry = new LogEntry(1);
 		line = "";
 	}
 
 	@Test
-	public void testDamageDone() {
+	public void testDamageEntry() {
 		line = "[03/17/2012 19:49:20] [@Source] [@Target:Companion {123451235123123}] [Series of Shots (burning) {2299572734918656}] [ApplyEffect {836045448945477}: Damage [Tech] (burning) {836045448945501}] (234* energy {836045448940874} -glance {836045448945509} (234 absorbed {836045448945511})) <234>";
 		parse();
+		assertEquals(EntryType.DAMAGE, entry.getType());
 		assertEquals("@Source", entry.getSource());
 		assertEquals(0, entry.getSourceId());
 		assertTrue(entry.sourceIsPlayer());
@@ -44,6 +47,7 @@ public class LineParserTest {
 		assertEquals("Series of Shots (burning)", entry.getAbility());
 		assertEquals(2299572734918656L, entry.getAbilityId());
 		assertEquals(EventType.APPLY_EFFECT, entry.getEventType());
+		assertEquals("ApplyEffect", entry.getEventType().getLocalName());
 		assertEquals(836045448945477L, entry.getEventTypeId());
 		assertEquals("Damage [Tech] (burning)", entry.getEventName());
 		assertEquals(836045448945501L, entry.getEventId());
@@ -61,9 +65,21 @@ public class LineParserTest {
 	}
 
 	@Test
-	public void testHealingReceived() {
-		line = "[03/17/2012 19:48:14] [@Brockly] [@Argorash] [Kolto Missile {985514605805568}] [ApplyEffect {836045448945477}: Heal {836045448945500}] (1024) <214>";
+	public void testGermanEntry() {
+		line = "[03/22/2012 00:10:25] [@Source] [@Target] [Ansturm {898601647603712}] [Effekt anwenden {836045448945477}: Shii-Cho-Form {836045448945501}] (0* energish {836045448940874} -verfehlt {836045448945502} (234 absurben {836045448945511})) <234>";
 		parse();
+		assertEquals(EntryType.DAMAGE, entry.getType());
+		assertEquals(EventType.APPLY_EFFECT, entry.getEventType());
+		assertEquals(0, entry.getValue());
+		assertEquals(EffectType.ENERGY, entry.getEffectType());
+		assertEquals(836045448940874L, entry.getEffectId());
+		assertEquals(MitigationType.MISS, entry.getMitigationType());
+		assertEquals(836045448945502L, entry.getMitigationId());
+		assertTrue(entry.isMitigate());
+		assertEquals(234, entry.getAbsorbValue());
+		assertEquals(836045448945511L, entry.getAbsorbId());
+		assertTrue(entry.isAbsorb());
+		assertEquals(234, entry.getThreatDelta());
 	}
 
 	@Test

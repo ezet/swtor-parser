@@ -7,7 +7,7 @@ public enum EffectType {
 			0L), UNKNOWN(0L);
 
 	private long id;
-	private String name;
+	private String localName;
 
 	private EffectType(long id) {
 		this.id = id;
@@ -17,15 +17,15 @@ public enum EffectType {
 		return id;
 	}
 
-	public String getName() {
-		return name;
+	public String getLocalName() {
+		return localName;
 	}
 
 	public static EffectType valueOfId(long id, String name) {
 		for (final EffectType type : EnumSet.allOf(EffectType.class)) {
 			if (type.id == id) {
 				type.id = id;
-				type.name = name;
+				type.localName = name;
 				return type;
 			}
 		}
@@ -34,10 +34,9 @@ public enum EffectType {
 		type.id = id;
 		return type;
 	}
-
-	@Override
-	public String toString() {
-		return name;
+	
+	public String toLocalString() {
+		return localName;
 	}
 
 }

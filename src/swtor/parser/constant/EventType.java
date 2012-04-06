@@ -7,7 +7,7 @@ public enum EventType {
 			836045448945472L), UNKNOWN(0L);
 
 	private long id;
-	private String name;
+	private String localName;
 
 	private EventType(long id) {
 		this.id = id;
@@ -17,15 +17,15 @@ public enum EventType {
 		return id;
 	}
 
-	public String getName() {
-		return name;
+	public String getLocalName() {
+		return localName;
 	}
 
 	public static EventType valueOfId(long id, String name) {
 		for (final EventType type : EnumSet.allOf(EventType.class)) {
 			if (type.id == id) {
 				type.id = id;
-				type.name = name;
+				type.localName = name;
 				return type;
 			}
 		}
@@ -35,7 +35,8 @@ public enum EventType {
 		return type;
 	}
 
-	public String toString() {
-		return name;
+	public String toLocalString() {
+		return localName;
 	}
+
 }

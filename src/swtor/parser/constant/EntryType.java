@@ -7,7 +7,7 @@ public enum EntryType {
 			0L);
 
 	private long id;
-	private String name;
+	private String localName;
 
 	private EntryType(long id) {
 		this.id = id;
@@ -17,14 +17,14 @@ public enum EntryType {
 		return id;
 	}
 
-	public String getName() {
-		return name;
+	public String getLocalName() {
+		return localName;
 	}
 
 	public static EntryType valueOfId(long id, String name) {
 		for (final EntryType type : EnumSet.allOf(EntryType.class)) {
 			if (type.id == id) {
-				type.name = name;
+				type.localName = name;
 				return type;
 			}
 		}
@@ -34,7 +34,7 @@ public enum EntryType {
 		return type;
 	}
 	
-	public String toString() {
-		return name;
+	public String toLocalString() {
+		return localName;
 	}
 }
