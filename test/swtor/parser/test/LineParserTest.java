@@ -30,6 +30,12 @@ public class LineParserTest {
 		entry = new LogEntry(1);
 		line = "";
 	}
+	
+	@Test
+	public void testNewDateFormat() {
+		line = "[20:51:05.123] [@Exalted] [Annihilation Droid XRR-3 {2034573252755456}] [] [Event {836045448945472}: ModifyThreat {836045448945483}] () <-3817>";
+		parse();
+	}
 
 	@Test
 	public void testDamageEntry() {

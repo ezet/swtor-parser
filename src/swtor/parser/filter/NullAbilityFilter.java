@@ -14,4 +14,16 @@ public class NullAbilityFilter implements InputFilter {
 		return true;
 	}
 
+	@Override
+	public void onLogStart() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLogEnd() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

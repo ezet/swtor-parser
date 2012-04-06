@@ -23,17 +23,38 @@ public class LogParser implements Parser {
 	private LogEntryParser parser = ParserFactory.getInstance();
 	private CombatLog combatLog;
 	private File file;
-	private List<InputFilter> inputfilters = new ArrayList<InputFilter>();
+	private final List<InputFilter> inputFilters = new ArrayList<InputFilter>();
+	private final List<OutputFilter> outputFilters = new ArrayList<OutputFilter>();
+	
+	{
+		addInputFilter(new NullAbilityFilter());
+	}
+	
+	public LogParser() {
+		
+	}
 
 	public LogParser(String path) {
-		this.file = new File(path);
+		setSource(path);
 	}
 
 	public LogParser(URI uri) {
-		this.file = new File(uri);
+		setSource(uri);
 	}
 
 	public LogParser(File file) {
+		setSource(file);
+	}
+	
+	public void setSource(String path) {
+		this.file = new File(path);
+	}
+	
+	public void setSource(URI uri) {
+		this.file = new File(uri);
+	}
+	
+	public void setSource(File file) {
 		this.file = file;
 	}
 
@@ -43,38 +64,45 @@ public class LogParser implements Parser {
 
 	@Override
 	public void addInputFilter(InputFilter filter) {
-		inputfilters.add(filter);
+		inputFilters.add(filter);
 	}
 
 	@Override
 	public void removeInputFilter(InputFilter filter) {
-		inputfilters.remove(filter);
+		inputFilters.remove(filter);
 	}
 
 	@Override
 	public void clearInputFilters() {
-		inputfilters.clear();
+		inputFilters.clear();
 	}
 
 	@Override
 	public void addOutputFilter(OutputFilter filter) {
-		// TODO Auto-generated method stub
+		outputFilters.add(filter);
 	}
 
 	@Override
 	public void removeOutputFilter(OutputFilter filter) {
-		// TODO Auto-generated method stub
+		outputFilters.remove(filter);
 	}
 
 	@Override
 	public void clearOutputFilters() {
-		// TODO Auto-generated method stub
+		outputFilters.clear();
+	}
+	
+	public LogEntryParser getParser() {
+		return parser;
+	}
+	
+	public void setParser(LogEntryParser parser) {
+		this.parser = parser;
 	}
 
 	@Override
 	public void parse() throws IOException, LogParserException {
 		List<LogEntry> entries = new ArrayList<LogEntry>();
-		addInputFilter(new NullAbilityFilter());
 		int size = estimateLines();
 		long start = System.currentTimeMillis();
 		Logger.debug("parsing file: ", file);
@@ -84,6 +112,7 @@ public class LogParser implements Parser {
 			entries = new ArrayList<LogEntry>(size);
 			int currentLine = 0;
 			String line;
+			fireLogStart();
 			while ((line = reader.readLine()) != null) {
 				Logger.debug(3, "input: " + line);
 				LogEntry entry = new LogEntry(++currentLine);
@@ -102,23 +131,45 @@ public class LogParser implements Parser {
 			if (reader != null)
 				reader.close();
 		}
+		fireLogEnd();
 		long end = System.currentTimeMillis();
 		Logger.debug("parse completed in: " + (end - start) + " ms.");
 		combatLog = new CombatLog(entries, file.getName());
 	}
+	
+	private void fireLogStart() {
+		for (final InputFilter f : inputFilters) {
+			f.onLogStart();
+		}
+		for (final OutputFilter f : outputFilters) {
+			f.onLogStart();
+		}
+	}
+	
+	private void fireLogEnd() {
+		for (final InputFilter f : inputFilters) {
+			f.onLogEnd();
+		}
+		for (final OutputFilter f : outputFilters) {
+			f.onLogEnd();
+		}
+	}
 
 	private boolean processInputFilters(LogEntry entry) {
-		boolean ignore = true;
-		for (InputFilter i : inputfilters) {
-			ignore = i.process(entry);
-			if (!ignore) {
+		boolean include = true;
+		for (final InputFilter i : inputFilters) {
+			include = i.process(entry);
+			if (!include) {
 				break;
 			}
 		}
-		return ignore;
+		return include;
 	}
 
 	private void processOutputFilters(LogEntry entry) {
+		for (final OutputFilter f : outputFilters) {
+			f.process(entry);
+		}
 
 	}
 
