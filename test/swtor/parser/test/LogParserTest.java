@@ -22,12 +22,12 @@ public class LogParserTest {
 
 	@Test
 	public void test() {
-		File file = new File("D:/Dev/Projects/SwtorParser/SampleLogs/");
 		try {
-			
+			File file = new File("D:/Dev/Projects/SwtorParser/SampleLogs/");
+//			file = new File("D:/Dev/Projects/SwtorParser/SampleLogs/combat_2012-03-17_10_39_06_966767.txt");
 //			file = new File("D:/Dev/Projects/SwtorParser/SampleLogs/huge.txt");
 //			new LogParser(file).parse();
-			
+
 			for (File p : file.listFiles()) {
 				Logger.log(p);
 				if (!p.getName().equals("german.txt")) {

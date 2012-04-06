@@ -22,7 +22,7 @@ public class Ability implements Model {
 	}
 	
 	public String toString() {
-		return name;
+		return "ability: " + name;
 	}
 
 }

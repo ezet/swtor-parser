@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import swtor.parser.constant.DamageType;
+import swtor.parser.constant.EffectType;
 import swtor.parser.constant.EntryType;
 import swtor.parser.constant.EventType;
 import swtor.parser.constant.MitigationType;
@@ -108,7 +108,7 @@ public class SplitParser implements LogEntryParser {
 					res.setMitigationType(MitigationType.valueOf(parts[1].substring(1).toUpperCase()));
 					res.setMitigateGameId(id);
 				} else {
-					res.setDamageType(DamageType.valueOf(parts[1].toUpperCase()));
+					res.setDamageType(EffectType.valueOf(parts[1].toUpperCase()));
 					res.setEffectGameId(id);
 				}
 			}

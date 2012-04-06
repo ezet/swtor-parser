@@ -5,11 +5,15 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import swtor.parser.constant.EffectType;
+import swtor.parser.constant.EventType;
+import swtor.parser.constant.MitigationType;
 import swtor.parser.model.LogEntry;
-import swtor.parser.parser.DefaultParser;
+import swtor.parser.parser.RegexParser;
 import swtor.parser.parser.LogEntryParser;
 import swtor.parser.parser.SafeParser;
 import swtor.parser.parser.SplitParser;
+import swtor.parser.util.Logger;
 
 public class LineParserTest {
 
@@ -18,7 +22,7 @@ public class LineParserTest {
 
 	private LogEntryParser simple = new SplitParser();
 	private LogEntryParser regex = new SafeParser();
-	private LogEntryParser basic = new DefaultParser();
+	private LogEntryParser basic = new RegexParser();
 
 	@Before
 	public void Before() {
@@ -28,8 +32,25 @@ public class LineParserTest {
 
 	@Test
 	public void testDamageDone() {
-		line = "[03/17/2012 19:49:20] [@Psyfe] [@Argorash] [Series of Shots (burning) {2299572734918656}] [ApplyEffect {836045448945477}: Damage [Tech] (burnig) {836045448945501}] (234 energy {836045448940874} -glance {836045448945509} (234 absorbed {836045448945511})) <234>";
+		line = "[03/17/2012 19:49:20] [@Source] [@Target:Companion {123451235123123}] [Series of Shots (burning)    {2299572734918656}] [ApplyEffect {836045448945477}: Damage [Tech] (burning) {836045448945501}] (234* energy {836045448940874} -glance {836045448945509} (234 absorbed {836045448945511})) <234>";
 		parse();
+		assertEquals("@Source", entry.getSource().getName());
+		assertTrue(entry.getSource().isPlayer());
+		assertFalse(entry.getSource().isCompanion());
+		assertEquals("@Target:Companion", entry.getTarget().getName());
+		assertFalse(entry.getTarget().isPlayer());
+		assertTrue(entry.getTarget().isCompanion());
+		assertEquals("Series of Shots (burning)", entry.getAbility().getName());
+		assertEquals(EventType.APPLY_EFFECT, entry.getEvent().getType());
+		assertEquals("Damage [Tech] (burning)", entry.getEvent().getName());
+		assertEquals(234, entry.getResult().getValue());
+		assertTrue(entry.getResult().isCritical());
+		assertEquals(EffectType.ENERGY, entry.getResult().getEffectType());
+		assertEquals(MitigationType.GLANCE, entry.getResult().getMitigationType());
+		assertTrue(entry.getResult().isMitigate());
+		assertEquals(234, entry.getResult().getAbsorbValue());
+		assertTrue(entry.getResult().isAbsorb());
+		assertEquals(234, entry.getResult().getThreatDelta());
 	}
 
 	@Test
@@ -57,15 +78,11 @@ public class LineParserTest {
 		parse();
 	}
 
-	private void validate() {
-
-	}
-
 	private void parse() {
 		try {
 			basic.parse(entry, line);
 //			simple.parse(entry, line);
-			regex.parse(entry, line);
+//			regex.parse(entry, line);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

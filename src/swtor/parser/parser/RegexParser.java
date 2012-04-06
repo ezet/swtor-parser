@@ -15,14 +15,20 @@ import swtor.parser.model.CombatEvent;
 import swtor.parser.model.LogEntry;
 import swtor.parser.model.Result;
 
-public class SafeParser implements LogEntryParser {
+public class RegexParser implements LogEntryParser {
 
 	private LogEntry entry;
 
-	private final static String regex = "\\[(.*)\\] \\[(.*)\\] \\[(.*)\\] \\[(.*)\\] \\[(.*):(.*)\\] \\((.*?)(?:-(.*?))?(?:\\((.*)\\))?\\)(?: <(-?\\d*)>)? *$";
-	private final static Pattern entryPattern = Pattern.compile(regex);
+	private final static String entryRegex = "\\[(.*?)\\]|<(.*)>";
+	private final static Pattern entryPattern = Pattern.compile(entryRegex);
 
-	private final static String idRegex = "(.+?)(?: \\{(\\d*)\\})? *$";
+	private final String eventRegex = "\\[(.*?): (.*)\\]";
+	private final Pattern eventPattern = Pattern.compile(eventRegex);
+
+	private final static String resultRegex = "\\((.*?)(?:-(.*?))?(?:\\((.*)\\))?\\)";
+	private final static Pattern resultPattern = Pattern.compile(resultRegex);
+
+	private final static String idRegex = "^(.*?)(?: *\\{(\\d*)\\})? *$";
 	private final static Pattern idPattern = Pattern.compile(idRegex);
 
 	private final static String valueRegex = "^(\\d+?)[\\*\\- ]*(?:(\\w+) \\{(\\d*)\\})? *$";
@@ -32,20 +38,31 @@ public class SafeParser implements LogEntryParser {
 	public void parse(LogEntry entry, String line) throws Exception {
 		this.entry = entry;
 		Matcher m = entryPattern.matcher(line);
-		m.matches();
+		m.find();
 		parseTimestamp(m.group(1));
-		parseActor(entry.getSource(), m.group(2));
-		parseActor(entry.getTarget(), m.group(3));
-		parseAbility(m.group(4));
-		parseEventType(m.group(5));
-		parseEventName(m.group(6));
-		parseResult(m.group(7));
-		parseMitigate(m.group(8));
-		parseAbsorb(m.group(9));
-		parseThreatDelta(m.group(10));
+		m.find();
+		parseActor(entry.getSource(), m.group(1));
+		m.find();
+		parseActor(entry.getTarget(), m.group(1));
+		m.find();
+		parseAbility(m.group(1));
+		m.usePattern(eventPattern);
+		m.find();
+		parseEventType(m.group(1));
+		parseEventName(m.group(2));
+		m.usePattern(resultPattern);
+		m.find();
+		parseValue(m.group(1));
+		parseMitigate(m.group(2));
+		parseAbsorb(m.group(3));
+		m.usePattern(entryPattern);
+		if (m.find()) {
+			parseThreatDelta(m.group(2));
+		}
 	}
 
 	private void parseTimestamp(String part) throws ParseException {
+		// TODO optimize, takes about 1.2sec.. why ? Do it manually ?
 		SimpleDateFormat format;
 		if (part.contains(" ")) {
 			format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -59,7 +76,7 @@ public class SafeParser implements LogEntryParser {
 	private void parseActor(Actor actor, String part) {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = idPattern.matcher(part);
-			m.matches();
+			m.find();
 			String name = m.group(1);
 			actor.setName(name);
 			if (!name.isEmpty() && name.contains(":")) {
@@ -76,7 +93,7 @@ public class SafeParser implements LogEntryParser {
 	private void parseAbility(String part) {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = idPattern.matcher(part);
-			m.matches();
+			m.find();
 			entry.getAbility().setName(m.group(1));
 			if (m.group(2) != null) {
 				entry.getAbility().setGameId(Long.valueOf(m.group(2)));
@@ -87,7 +104,7 @@ public class SafeParser implements LogEntryParser {
 	private void parseEventType(String part) {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = idPattern.matcher(part);
-			m.matches();
+			m.find();
 			CombatEvent event = entry.getEvent();
 			event.setType(EventType.valueOfString(m.group(1)));
 			if (m.group(2) != null) {
@@ -99,7 +116,7 @@ public class SafeParser implements LogEntryParser {
 	private void parseEventName(String part) {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = idPattern.matcher(part);
-			m.matches();
+			m.find();
 			entry.getEvent().setName(m.group(1));
 			entry.setType(EntryType.valueOfString(m.group(1)));
 			if (m.group(2) != null) {
@@ -108,11 +125,10 @@ public class SafeParser implements LogEntryParser {
 		}
 	}
 
-	private void parseResult(String part) {
+	private void parseValue(String part) {
 		if (part != null && !part.isEmpty()) {
-
 			Matcher m = valuePattern.matcher(part);
-			m.matches();
+			m.find();
 			Result res = entry.getResult();
 			res.setValue(Integer.valueOf(m.group(1)));
 			if (part.contains("*"))
@@ -126,7 +142,7 @@ public class SafeParser implements LogEntryParser {
 	private void parseMitigate(String part) {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = idPattern.matcher(part);
-			m.matches();
+			m.find();
 			if (m.group(1) != null) {
 				entry.getResult().setMitigationType(MitigationType.valueOf(m.group(1).toUpperCase()));
 			}
@@ -139,7 +155,7 @@ public class SafeParser implements LogEntryParser {
 	private void parseAbsorb(String part) {
 		if (part != null && !part.isEmpty()) {
 			Matcher m = valuePattern.matcher(part);
-			m.matches();
+			m.find();
 			entry.getResult().setAbsorbValue(Integer.valueOf(m.group(1)));
 			entry.getResult().setAbsorbId(Long.valueOf(m.group(3)));
 			entry.getResult().setAbsorb(true);

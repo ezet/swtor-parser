@@ -1,6 +1,6 @@
 package swtor.parser.model;
 
-import swtor.parser.constant.DamageType;
+import swtor.parser.constant.EffectType;
 import swtor.parser.constant.MitigationType;
 
 public class Result implements Model {
@@ -8,7 +8,7 @@ public class Result implements Model {
 	private int value;
 	private boolean critical;
 
-	private DamageType effectType = DamageType.NONE;
+	private EffectType effectType = EffectType.NONE;
 	private long effectGameId;
 
 	private MitigationType mitigationType = MitigationType.NONE;
@@ -36,11 +36,11 @@ public class Result implements Model {
 		this.critical = critical;
 	}
 
-	public DamageType getEffectType() {
+	public EffectType getEffectType() {
 		return effectType;
 	}
 
-	public void setDamageType(DamageType effectType) {
+	public void setDamageType(EffectType effectType) {
 		this.effectType = effectType;
 	}
 
@@ -105,7 +105,7 @@ public class Result implements Model {
 	}
 
 	public String toString() {
-		return String.format("%s, %s, %s, %s, %s, %s, %s", effectType, value, critical, effectType, mitigationType,
+		return String.format("effType:%s, value:%s, crit:%s, mtgType:%s, absorbVal:%s, dThreat:%s", effectType, value, critical, mitigationType,
 				absorbValue, threatDelta);
 	}
 }
